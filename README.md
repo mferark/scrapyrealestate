@@ -1,6 +1,6 @@
 ## Scrapyrealestate
 
-Este programa en Python hace Scrapy a varios portales inmobiliarios y posteriormente envía las nuevas viviendas detectadas a un grupo de Telegram configurado por el usuario.
+Este programa en Python escrapea varios portales inmobiliarios y posteriormente envía las nuevas viviendas detectadas a un grupo de Telegram configurado por el usuario.
 
 ### Prerrequisitos
 
