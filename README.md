@@ -53,11 +53,11 @@ sudo python3 main.py -ms
 Para que funcione es necesario antes instalar los paquetes con sudo. Si no necesitamos el servicio no es necesario.
 Nos preguntará primero si queremos que lo active para iniciarse de inicio y seguidamente si lo queremos ejecutar.
 ```
-sudo pip3 install -r scrapy_rs/requirements.txt
+sudo pip3 install -r scrapyrealestate/requirements.txt
 ```
 Una vez instalados con sudo los podemos volver a borrar, ya que realmente no es una buena praxis.
 ```
-sudo pip3 uninstall -r scrapy_rs/requirements.txt
+sudo pip3 uninstall -r scrapyrealestate/requirements.txt
 ```
 Finalmente podemos ver como esta el servicio:
 ````

@@ -8,7 +8,7 @@ from art import *
 __author__ = "mferark"
 __author__ = "mferarg@mail.com"
 __license__ = "GPL"
-__version__ = "1.1"
+__version__ = "1.0"
 
 # Parameters
 host_bbdd = 'sticker.ddns.net'
