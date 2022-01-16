@@ -6,7 +6,7 @@ from os import path
 from art import *
 
 __author__ = "mferark"
-__author__ = "mferarg@mail.com"
+__author__ = "mferarg@gmail.com"
 __license__ = "GPL"
 __version__ = "1.0"
 
