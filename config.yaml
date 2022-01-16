@@ -1,7 +1,7 @@
 ---
 log_level: INFO # Nivel de log: CRITICAL, ERROR, WARNING, INFO, DEBUG
 scrapy_time_update: 900 # Tiempo (minimo 300) entre cada búsqueda (en segundos)
-telegram_chatuserID: -1001551344046 # ID del chat telegram - Example: -1001647968011
+telegram_chatuserID: -1001551344000 # ID del chat telegram - Example: -1001647968011
 
 flat_details:
   max_price: 0 # Precio maximo de filtro (0 = sin limite)
