@@ -3,7 +3,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import Column, Integer, String, Float, DateTime
-from flask import Flask, request, jsonify
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 
@@ -105,7 +105,7 @@ def create_table_bbdd_mysql(host_bbdd, user_bbdd, passwd_bbdd, bbdd_name, table_
         group_name = db.Column(db.String(30))
         time_refresh = db.Column(db.Integer)
         max_price = db.Column(db.Integer)
-        urls = db.Column(db.String(500))
+        urls = db.Column(db.String(1000))
         so = db.Column(db.String(80))
         host_name = db.Column(db.String(80))
         datetime = db.Column(db.DateTime)
