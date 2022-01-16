@@ -105,7 +105,7 @@ def create_table_bbdd_mysql(host_bbdd, user_bbdd, passwd_bbdd, bbdd_name, table_
         group_name = db.Column(db.String(30))
         time_refresh = db.Column(db.Integer)
         max_price = db.Column(db.Integer)
-        urls = db.Column(db.String(1000))
+        urls = db.Column(db.String(800))
         so = db.Column(db.String(80))
         host_name = db.Column(db.String(80))
         datetime = db.Column(db.DateTime)

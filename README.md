@@ -33,7 +33,7 @@ Para que todo funcione es necesario editar algunos parámetros del archivo confi
 - **Añadir al canal el bot @scrapyrealestatebot** con permisos para poder publicar mensajes. Eso es necesario para que se publiquen correctamente las viviendas en el canal. Si no está bien añadido, el programa no iniciara.
 - **Obtener el chat id**. Lo podemos hacer con el bot de Telegram @RawDataBot.
 
-### Ejecutar script
+### Ejecutar script 
 Vamos dentro del directorio scrapyrealestate y ejecutamos main.py (importante estar dentro del directorio):
 
 Para Windows es recomendable usar PowerShell y para Linux y Mac la terminal.
