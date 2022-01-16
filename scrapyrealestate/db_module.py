@@ -96,7 +96,7 @@ def create_table_bbdd_mysql(host_bbdd, user_bbdd, passwd_bbdd, bbdd_name, table_
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     db = SQLAlchemy(app)
-    ma = Marshmallow(app)
+    # ma = Marshmallow(app)
 
     class User_connection(db.Model):
         __tablename__ = table_name

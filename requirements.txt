@@ -17,3 +17,4 @@ flask
 flask-sqlalchemy
 flask-marshmallow
 marshmallow-sqlalchemy
+wheel

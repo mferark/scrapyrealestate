@@ -212,7 +212,7 @@ def check_file_config():
         user = user_connection(id, chat_id, gtname, refresh, max_price, urls_mysql, so, host_name, datetime.datetime.now())
         db.session.add(user)  # Adds new User record to database
         db.session.commit()
-       #except:
+        #except:
             #logging.info('PROBLEM WHILE MAKING DATABASE CONNECTION USER. PROVABLY CHAT_ID EXISTS. PASS.')
             #pass
             #sys.exit(0)
