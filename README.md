@@ -30,7 +30,7 @@ Para que todo funcione es necesario editar algunos parámetros del archivo confi
 
 ### Crear canal Telegram y obtener chat id
 - **Crear el canal** en Telegram. Lo podemos hacer privado o público. Lo ideal es que fuera público y poder compartirlo para que más gente pueda usarlo. La intención de todo eso es intentar crear una red con esos grupos públicos y que puedan encontrarse en un sitio unificado. De momento se iran guardando todos estos grupos en una base de datos externa para más adelante poder generar esta red.
-- **Añadir en el canal el bot @realestatebot** con permisos para poder publicar mensajes. Eso es necesario para que se publiquen correctamente las viviendas en el canal. Si no está bien añadido, el programa no iniciara.
+- **Añadir en el canal el bot @scrapyrealestatebot** con permisos para poder publicar mensajes. Eso es necesario para que se publiquen correctamente las viviendas en el canal. Si no está bien añadido, el programa no iniciara.
 - **Obtener el chat id**. Lo podemos hacer con el bot de Telegram @RawDataBot.
 
 ### Ejecutar script
