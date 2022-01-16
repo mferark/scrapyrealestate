@@ -12,7 +12,7 @@ Este programa en Python escrapea varios portales inmobiliarios y posteriormente 
 - <b><a href="https://t.me/scrapyrealestate_testing">Grupo de Telegram Testing</a> (Ayuda y resolución de problemas/dudas)</b>
 
 ### Instalación Python y paquetes
-- Instalar Python 3 (mínimo 3.7)
+- Instalar Python 3 (mínimo 3.9)
 - Instalar los diferentes paquetes del archivo requirements.txt. Tanto si ya tenemos otros paquetes instalados como si no, es recomendable crear un <a href="https://docs.python.org/es/3/tutorial/venv.html">entorno virtual</a> de python que evitará posibles incopatibilidades.
 
 ```
