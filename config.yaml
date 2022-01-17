@@ -20,7 +20,7 @@ pisoscom_data:
 
 fotocasa_data:
   db_name: fotocasa
-  urls: # En este caso, la url, los pisos tienen que estar ordenados por orden (nuevos primero) - Recomendado para ciudades pequeñas, barrios medianos y pueblos (aprox 300 vivendas en total) ya que solo coge las 3 primeras viviendas de la página.
+  urls: # SOLO EN ESTE CASO, la url, los pisos tienen que estar ordenados por orden (nuevos primero) - Recomendado para ciudades pequeñas, barrios medianos y pueblos (aprox 300 vivendas en total) ya que solo coge las 3 primeras viviendas de la página.
     - https://www.fotocasa.es/ca/lloguer/habitatges/girona-capital/totes-les-zones/l?sortType=publicationDate&latitude=41.983&longitude=2.8253&combinedLocationIds=724,9,17,241,426,17079,0,0,0
 
 habitaclia_data:
