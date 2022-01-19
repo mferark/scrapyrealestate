@@ -187,8 +187,8 @@ def json_to_bbdd(json_file_name, db_name, db_engine, session, Base, telegram_msg
             logging.info(f'ADDING FLAT {flat_id} TO BBDD {db_name.upper()}')
 
             # Fem modul de 5 dels flats. Cada modul de 5 esperem 10s a veure si no peta el puto telegram
-            if new_flats % 15 == 0:
-                time.sleep(15)
+            if new_flats % 20 == 0:
+                time.sleep(200)
 
             if telegram_msg:
                 if price <= data['flat_details']['max_price'] or data['flat_details']['max_price'] == 0:  # Enviar missatge a telegram si es True i el preu es <= 1000
