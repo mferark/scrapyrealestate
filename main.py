@@ -191,11 +191,12 @@ def check_file_config():
         # Si ha funcionat enviem dades
         logging.info(f"TELEGRAM {info_message.chat.title} CHANNEL VERIFIED")
         try:
-            info_message = tb.send_message('-1001647968081', f"<code>SO          {so}</code>\n"
-                                                        f"<code>GTNAME      @{gtname}</code>\n"
+            info_message = tb.send_message('-1001647968081',f"<code>GTNAME      @{gtname}</code>\n"
                                                         f"<code>ID          {chat_id}</code>\n"
                                                         f"<code>REFRESH     {refresh}s</code>\n"
                                                         f"<code>MAX PRICE   {max_price}€</code>\n"
+                                                        f"<code>SO          {so}</code>\n",
+                                                        f"<code>HOSTNAME    {host_name}</code>\n",
                                                         f"<code>URLS        {urls_ok_count} → </code>\n"
                                                         f"<code>{urls_text}</code>\n",
                                            parse_mode='HTML'
