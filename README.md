@@ -46,7 +46,7 @@ Para evitar que se cierre y dejarlo en segundo plano (en una máquina Linux):
 ```
 nohup python3 main.py &
 ```
-### Crear servicio
+### Crear servicio 
 En máquinas Linux también podemos crear un servicio con esta opción del programa:
 ```
 sudo python3 main.py -ms
