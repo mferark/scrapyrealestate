@@ -9,6 +9,7 @@ from scrapyrealestate.items import ScrapyrealestateItem  # ERROR (es confundeix 
 # from scrapyrealestate.items import ScrapyrealestateItem
 from main import get_urls
 
+
 class IdealistaSpider(CrawlSpider):
     name = "idealista"
     allowed_domains = ["idealista.com"]
@@ -16,16 +17,18 @@ class IdealistaSpider(CrawlSpider):
 
     urls = get_urls()
     start_urls = urls['start_urls_idealista']
-        
+
     # Guardem el numero total de pàgines per fer scrap
     total_urls_pass = 1  # Inicialitzem contador
 
     custom_settings = {
         'ROTATING_PROXY_PAGE_RETRY_TIMES': 99999999999,  # TODO: is it possible to setup this parameter with no limit?
         'ROTATING_PROXY_LIST': get_proxies(),
+        # 'DOWNLOAD_FAIL_ON_DATALOSS': False,
+        # 'DOWNLOAD_DELAY': 1.25,
         "FEEDS": {"data/idealista.json": {"format": "json"}},
         'DEFAULT_REQUEST_HEADERS': {
-            'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+            'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
             'accept-encoding': 'gzip, deflate, br',
             'accept-language': 'es-ES,es;q=0.9,ca;q=0.8,en;q=0.7',
             'cache-control': 'max-age=0',
@@ -35,7 +38,7 @@ class IdealistaSpider(CrawlSpider):
             'sec-fetch-user': '?1',
             'sec-gpc': '1',
             'upgrade-insecure-requests': '1',
-            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36'
+            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36'
         }
     }
 
@@ -72,7 +75,7 @@ class IdealistaSpider(CrawlSpider):
                         break
             except:
                 id = ''
-            
+
             # Iterem els elements de details per identificar cada un (hab, m², planta, hora)
             for d in details[0:3]:
                 # print(d.text.strip()[1:])
@@ -119,9 +122,10 @@ class IdealistaSpider(CrawlSpider):
     # Overriding parse_start_url to get the first page
     parse_start_url = parse
 
+
 class PisoscomSpider(CrawlSpider):
     #  Si existeix json anterior, l'eliminem
-    #if os.path.exists(f"{'data'}/{data['pisoscom_data']['db_name']}.json"):
+    # if os.path.exists(f"{'data'}/{data['pisoscom_data']['db_name']}.json"):
     #    os.remove(f"{'data'}/{data['pisoscom_data']['db_name']}.json")
 
     name = "pisoscom"
@@ -146,7 +150,7 @@ class PisoscomSpider(CrawlSpider):
             'sec-fetch-user': '?1',
             'sec-gpc': '1',
             'upgrade-insecure-requests': '1',
-            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36'
+            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36'
         }
     }
 
@@ -187,7 +191,10 @@ class PisoscomSpider(CrawlSpider):
             # span --> class="item-price h2-simulated" --> span .text
             price = flats[nflat].find("span", {"class": "ad-preview__price"}).text.strip()
             # span --> class="item-detail" --> [nflat] --> span .text
-            rooms = flats[nflat].find_all("p", {"class": "ad-preview__char p-sm"})[0].text.strip()
+            try:
+                rooms = flats[nflat].find_all("p", {"class": "ad-preview__char p-sm"})[0].text.strip()
+            except:
+                rooms = ""
             # Hi ha pisos sense m2, data o planta. Per evitar problemes assignem variable buida si hi ha error.
             try:
                 m2 = flats[nflat].find_all("p", {"class": "ad-preview__char p-sm"})[2].text.strip()
@@ -223,10 +230,12 @@ class PisoscomSpider(CrawlSpider):
         # tb.send_message(data['telegram'][''1001647968081''], f'PAGES SCRAPED [{self.total_urls_pass}/{self.total_urls}] ({str(end_time - start_time)[:4]}s)')
 
         self.total_urls_pass += 1  # Sumem 1 al total de pàgines
+
     # logging.info(f'TOTAL SCRAP TIME: {str(total_time)[:4]}s')  # Mostrem temps total
 
     # Overriding parse_start_url to get the first page
     parse_start_url = parse
+
 
 class FotocasaSpider(CrawlSpider):
     name = "fotocasa"
@@ -234,7 +243,7 @@ class FotocasaSpider(CrawlSpider):
 
     urls = get_urls()
     start_urls = urls['start_urls_fotocasa']
-    
+
     custom_settings = {
         # 'DOWNLOAD_DELAY': 2,
         # 'ITEM_PIPELINES': {
@@ -252,7 +261,7 @@ class FotocasaSpider(CrawlSpider):
             'sec-fetch-user': '?1',
             'sec-gpc': '1',
             'upgrade-insecure-requests': '1',
-            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36'
+            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36'
         }
     }
 
@@ -342,6 +351,7 @@ class FotocasaSpider(CrawlSpider):
     # Overriding parse_start_url to get the first page
     parse_start_url = parse
 
+
 class FotocasaSpider_json(CrawlSpider):
     name = "fotocasa_json"
     allowed_domains = ["fotocasa"]
@@ -378,8 +388,8 @@ class FotocasaSpider_json(CrawlSpider):
         # Filter all the flats paginated by the website following the pattern indicated
         Rule(LinkExtractor(restrict_xpaths=(
             "//a[@class='sui-LinkBasic sui-AtomButton sui-AtomButton--primary sui-AtomButton--outline sui-AtomButton--center sui-AtomButton--small sui-AtomButton--link sui-AtomButton--empty']")),
-             callback='parse',  # cridem la funcio parse de nou
-             follow=True),  # Seguim l'enllaç
+            callback='parse',  # cridem la funcio parse de nou
+            follow=True),  # Seguim l'enllaç
     )
 
     def parse(self, response):
@@ -464,6 +474,7 @@ class FotocasaSpider_json(CrawlSpider):
     # Overriding parse_start_url to get the first page
     parse_start_url = parse
 
+
 class HabitacliaSpider(CrawlSpider):
     name = "habitaclia"
     allowed_domains = ["habitaclia.com"]
@@ -491,7 +502,7 @@ class HabitacliaSpider(CrawlSpider):
             'sec-fetch-user': '?1',
             'sec-gpc': '1',
             'upgrade-insecure-requests': '1',
-            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36'
+            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36'
         }
     }
 
@@ -528,7 +539,7 @@ class HabitacliaSpider(CrawlSpider):
             next_page = ""
             # Si veiem que no hi ha mes links, sortim sense agafar els pisos
             # de l'ultima pàgina ja que dona molts problemes
-            #return
+            # return
 
         # Iterem per cada numero d'habitatge de la pàgina i agafem les dades
         for nflat in range(len(flats)):
@@ -578,7 +589,7 @@ class HabitacliaSpider(CrawlSpider):
                 post_time = ""
 
             # Posem els numeros de la href a una llista. Mirem de la llista qui te +10 len(), aquest es el id.
-            #id = ""
+            # id = ""
             for n in re.findall(r"\d+", href):
                 if len(n) > 6:
                     id = n
@@ -603,12 +614,13 @@ class HabitacliaSpider(CrawlSpider):
         end_time = time.time()
         self.total_time += end_time  # Sumem el temps total
         # Notifiquem pagines total al log
-        #logging.info(f'PAGES SCRAPED [{self.total_urls_pass}/{self.total_urls}] ({str(end_time - start_time)[:4]}s)')
+        # logging.info(f'PAGES SCRAPED [{self.total_urls_pass}/{self.total_urls}] ({str(end_time - start_time)[:4]}s)')
         # if self.total_urls_pass % 5 == 0:
         # Notifiquem al grup de logs de telegram cada 5
         # tb.send_message(data['telegram'][''1001647968081''], f'PAGES SCRAPED [{self.total_urls_pass}/{self.total_urls}] ({str(end_time - start_time)[:4]}s)')
 
         self.total_urls_pass += 1  # Sumem 1 al total de pàgines
+
     # logging.info(f'TOTAL SCRAP TIME: {str(total_time)[:4]}s')  # Mostrem temps total
 
     # Overriding parse_start_url to get the first page

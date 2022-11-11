@@ -15,6 +15,8 @@ BOT_NAME = 'scrapyrealestate'
 SPIDER_MODULES = ['scrapyrealestate.spiders']
 NEWSPIDER_MODULE = 'scrapyrealestate.spiders'
 
+REQUEST_FINGERPRINTER_IMPLEMENTATION = '2.7'
+
 DOWNLOADER_MIDDLEWARES = {
     'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
     'scrapy_useragents.downloadermiddlewares.useragents.UserAgentsMiddleware': 500,
@@ -30,7 +32,7 @@ PROXY_POOL_PAGE_RETRY_TIMES = 2
 PROXY_POOL_TRY_WITH_HOST = True
 
 # Minimum level to log. Available levels are: CRITICAL, ERROR, WARNING, INFO, DEBUG.
-LOG_LEVEL = 'DEBUG'
+LOG_LEVEL = 'WARNING'
 
 #PROXY_POOL_ENABLED = True
 

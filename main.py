@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-import datetime, sys, telebot, time, shutil, os.path, platform, os, logging, yaml, uuid, argparse
+import sys, telebot, time, shutil, os.path, platform, os, logging, yaml, uuid, argparse
 import scrapyrealestate.crawler_module as flats_module
 import scrapyrealestate.db_module as db_module
 from os import path
@@ -8,14 +8,15 @@ from art import *
 __author__ = "mferark"
 __author__ = "mferarg@gmail.com"
 __license__ = "GPL"
-__version__ = "1.0"
+__version__ = "1.1"
 
 # Parameters
-host_bbdd = 'sticker.ddns.net'
-user_bbdd = 'realestate'
-passwd_bbdd = '1yUCVhoswC*'
-bbdd_name = f"scrapyrealestate{__version__.replace('.', '')}"
-
+config_db_mongodb = {
+    'db_user': "scrapyrealestate",
+    'db_password': "23sjz0UJdfRwsIZm",
+    'db_host': "scrapyrealestate.sk0pae1.mongodb.net",
+    'db_name': f"scrapyrealestate{__version__.replace('.', '')}",
+}
 # open the yaml file and load it into data
 with open('config.yaml') as f:
     data = yaml.load(f, Loader=yaml.FullLoader)
@@ -23,11 +24,13 @@ with open('config.yaml') as f:
 def args():
     default = False
     makeservice = False
+    proxyfile = False
     # Initialize parser
     parser = argparse.ArgumentParser()
     # Adding optional argument
     parser.__version__ = '1.0'
     parser.add_argument("-ms", "--makeservice", help="make service", action='store_true')
+    parser.add_argument("-pf", "--proxyfile", help="proxy file", action='store_true')
 
     # Read arguments from command line
     args = vars(parser.parse_args())
@@ -36,7 +39,11 @@ def args():
         logging.info(f"MAKE SERVICE OPTION ENABLED")
         makeservice = True
 
-    return makeservice
+    if parser.parse_args().proxyfile:
+        logging.info(f"PROXY FILE OPTION ENABLED")
+        proxyfile = True
+
+    return makeservice, proxyfile
 
 def check_logs():
     logging.basicConfig(level=data['log_level'],
@@ -100,7 +107,7 @@ def get_urls():
 
     return urls
 
-def check_file_config():
+def check_file_config(db_client, db_name):
     if data['log_level'] is None:
         logging.info('INFO DEFAULT LOG')
         data['log_level'] = 'INFO'
@@ -123,7 +130,7 @@ def check_file_config():
     urls = get_urls()
     urls_ok = ''
     urls_text = ''
-    urls_mysql = ''
+    db_urls = ''
     urls_ok_count = 0
 
     # Iterem cada url i portal
@@ -146,7 +153,7 @@ def check_file_config():
                 portal_name = portal_url.split('.')[1]
                 urls_ok_count += 1
                 urls_ok += f' <a href="{url}">{portal_name}</a>    '
-                urls_mysql += f'{url};'
+                db_urls += f'{url};'
                 try:
                     urls_text += f"\t\t- {portal_name} → {url.split('/')[4]}\n"
                 except:
@@ -180,43 +187,37 @@ def check_file_config():
             sys.exit()
 
         # data
-        id = str(uuid.uuid4())[:8]
-        chat_id = info_message.chat.id
-        gtname = info_message.chat.title
-        refresh = data['scrapy_time_update']
-        max_price = data['flat_details']['max_price']
-        host_name = platform.node()
-        so = platform.platform()
+        data_host = {
+            'id': str(uuid.uuid4())[:8],
+            'chat_id': info_message.chat.id,
+            'gtname': info_message.chat.title,
+            'refresh': data['scrapy_time_update'],
+            'max_price': data['flat_details']['max_price'],
+            'urls': db_urls,
+            'host_name': platform.node(),
+            'so': platform.platform()
+        }
 
         # Si ha funcionat enviem dades
         logging.info(f"TELEGRAM {info_message.chat.title} CHANNEL VERIFIED")
-        try:
-            info_message = tb.send_message('-1001647968081',f"<code>GTNAME      @{gtname}</code>\n"
-                                                        f"<code>ID          {chat_id}</code>\n"
-                                                        f"<code>REFRESH     {refresh}s</code>\n"
-                                                        f"<code>MAX PRICE   {max_price}€</code>\n"
-                                                        f"<code>SO          {so}</code>\n",
-                                                        f"<code>HOSTNAME    {host_name}</code>\n",
-                                                        f"<code>URLS        {urls_ok_count} → </code>\n"
-                                                        f"<code>{urls_text}</code>\n",
-                                           parse_mode='HTML'
-                                           )
+        #try:
+        '''info_message = tb.send_message('-1001647968081',f"<code>GTNAME      @{data_host['gtname']}</code>\n"
+                                                    f"<code>ID          {data_host['chat_id']}</code>\n"
+                                                    f"<code>REFRESH     {data_host['refresh']}s</code>\n"
+                                                    f"<code>MAX PRICE   {data_host['max_price']}€</code>\n"
+                                                    f"<code>SO          {data_host['so']}</code>\n"
+                                                    f"<code>HOSTNAME    {data_host['host_name']}</code>\n"
+                                                    f"<code>URLS        {data_host['urls_ok_count']} → </code>\n"
+                                                    f"<code>{urls_text}</code>\n",
+                                       parse_mode='HTML'
+                                       )'''
 
         # Si no s'ha enviat el missatge de telegram
-        except:
-            pass
+        #except:
+        #    pass
 
         # enviem dades
-        user_connection, db = db_module.create_table_bbdd_mysql(host_bbdd, user_bbdd, passwd_bbdd, bbdd_name, 'sr_connections')
-
-        #try:
-        user = user_connection(id, chat_id, gtname, refresh, max_price, urls_mysql, so, host_name, datetime.datetime.now())
-        db.session.add(user)  # Adds new User record to database
-        db.session.commit()
-        #except:
-            #logging.info('PROBLEM WHILE MAKING DATABASE CONNECTION USER. PROVABLY CHAT_ID EXISTS. PASS.')
-            #pass
-            #sys.exit(0)
+        db_module.insert_host_mongodb(db_client, db_name, data_host)
 
     else:
         logging.error('TELEGRAM CHAT ID IS EMPTY')
@@ -263,7 +264,7 @@ def scrap_realestate(realestate_data, telegram_msg):
                               telegram_msg)
 
     end_time = time.time()
-    logging.info(f"SPIDER {realestate_data['db_name'].upper()} TIME: {str(end_time - start_time)[:4]}s")
+    logging.debug(f"SPIDER {realestate_data['db_name'].upper()} TIME: {str(end_time - start_time)[:4]}s")
     # tb.send_message(data['telegram'][''1001647968081''], f"SPIDER {realestate_data['db_name'].upper()} TIME: {str(end_time - start_time)[:4]}s)")
 
 def scrap_allrealestates(info_message, time_update):
@@ -280,11 +281,11 @@ def scrap_allrealestates(info_message, time_update):
             telegram_msg = True
             logging.debug('TELEGRAM MSG ENABLED')
 
-        #try:
-        scrap_realestate(data['idealista_data'], telegram_msg)  # Cridem la funcio que fa scraping a idealista
-        #except:
-        #    logging.error('ERROR SCRAPING idealista_data')
-        #    pass
+        try:
+            scrap_realestate(data['idealista_data'], telegram_msg)  # Cridem la funcio que fa scraping a idealista
+        except:
+            logging.error('ERROR SCRAPING idealista_data')
+            pass
 
         try:
             scrap_realestate(data['pisoscom_data'], telegram_msg)
@@ -311,122 +312,6 @@ def scrap_allrealestates(info_message, time_update):
         # tb.send_message(tg_log_chat, f"{pwd_name.upper()} FINISHED ({str(end_time - start_time)[:4]}s)")
         time.sleep(int(time_update))
 
-def make_service():
-    # Comprovem que l'equip es linux
-    if platform.system() != 'Linux':
-        logging.error(f'TO MAKE SERVICE NEED LINUX AND YOU HAVE {platform.system()}. EXIT.')
-        sys.exit()
-
-    # Sino existeix el fitxer scraper_template.service, sortim
-    logging.debug('CHECKING /scripts/scraper_template.service...')
-    if not path.exists(f"./scripts/scraper_template.service"):
-        logging.error("NOT FILE FOUND ./scripts/scraper_template.service")
-        sys.exit()
-
-    # Sino existeix el fitxer scraper_script_template.sh, sortim
-    logging.debug('CHECKING /scripts/scraper_script_template.sh"...')
-    if not path.exists("./scripts/scraper_script_template.sh"):
-        logging.error("NOT FILE FOUND ./scripts/scraper_script_template.sh")
-        sys.exit()
-
-    # mirem si l'usuari te permisos
-    if os.geteuid() != 0:
-        logging.error("YOU NEED TO HAVE ROOT PRIVILEGIES FOR MAKE SERVICE. EXIT.")
-        sys.exit()
-
-    # agafem la ruta on esta la carpeta del programa
-    try:
-        route_path = os.getcwd()
-    except:
-        logging.error("ERROR WHILE GETTING ROUTE PATH. NEED SUDO TO CREATE SERVICE. EXIT")
-        sys.exit()
-
-    # agafem el nom de la carpeta (nom servei) ultim de la llista
-    try:
-        service_name = os.getcwd().split('/')[-1]
-    except:
-        service_name = ''
-        logging.error("service_name NOT FOUND")
-        sys.exit(0)
-
-    # Si el servei existeix, preguntem si el volem sobreescriure, sino sortim
-    if path.exists(f'/etc/systemd/system/{service_name}.service'):
-        logging.info(f"SERVICE {service_name} EXISTS")
-        # Preguntem si reescriure el servei
-        ans = input(f'Dou you like to reinstall {service_name} service? ')
-        # Si es afirmatiu, reescrbim el servei, sino anem a la seguent
-        if ans == 'YES' or ans == 'yes' or ans == 'Y' or ans == 'y':
-            # Parem i eliminem el servei
-            logging.info(f"STOPPING AND DISABLING SERVICE {service_name}")
-            try:
-                os.system(f"sudo systemctl stop {service_name}.service")
-                os.system(f"sudo systemctl disable {service_name}.service")
-                os.system(f"sudo rm /etc/systemd/system/{service_name}.service")
-                os.system(f"sudo systemctl daemon-reload")
-                os.system(f"sudo systemctl reset-failed")
-            except:
-                logging.error(f"ERROR WHEN STOPPING AND DISABLING SERVICE {service_name}")
-        else:
-            return
-
-    # Creem servei per al nou script
-    try:
-        logging.info(
-            f"EDITING /etc/systemd/system/{service_name}.service...")
-        # Copiar scraper_template.service
-        with open('./scripts/scraper_template.service', 'r') as file:
-            filedata = file.read()
-
-        # Replace the target string
-        filedata = filedata.replace('${route_path}', route_path)
-        filedata = filedata.replace('${name_file}', service_name)
-
-        # Write the file out again
-        with open(f'/etc/systemd/system/{service_name}.service', 'w') as file:
-            file.write(filedata)
-    except:
-        logging.error(f'ERROR EDITING /etc/systemd/system/{service_name}.service')
-
-    # Creem servei per al nou script
-    try:
-        logging.info(
-            f"EDITING {route_path}/scripts/{service_name}.sh...")
-        # Copiar config.yaml
-        with open('./scripts/scraper_script_template.sh', 'r') as file:
-            filedata = file.read()
-
-        # Replace the target string
-        filedata = filedata.replace('${route_path}', f'{route_path}')
-
-        # Write the file out again
-        with open(f'{route_path}/scripts/{service_name}.sh', 'w') as file:
-            file.write(filedata)
-
-    except:
-        logging.error(f'ERROR EDITING {route_path}/scripts/{service_name}.sh')
-
-    # Donem permisos al fitxer
-    logging.info("CHANGING PERMISIONS...")
-    os.system(f"sudo chmod 744 {route_path}/scripts/{service_name}.sh")
-    os.system(f"sudo chmod 644 /etc/systemd/system/{service_name}.service")
-
-    # os.system(f"sudo systemctl enable {service_name}.service") # Perque no s'inicii al iniciar
-    os.system("sudo systemctl daemon-reload")
-
-    # Preguntem si volem que el servei s'autoinicii
-    ans = input(f'Dou you enable {service_name} service? (This means it start every start)')
-    if ans == 'YES' or ans == 'yes' or ans == 'Y' or ans == 'y':
-        logging.info(f"ENABLING SERVICE {service_name}....")
-        os.system(f"sudo systemctl enable {service_name}.service") # activem el servei
-
-    # Preguntem si volem que el servei s'inicii
-    ans = input(f'Dou you start {service_name} service?')
-    if ans == 'YES' or ans == 'yes' or ans == 'Y' or ans == 'y':
-        logging.info(f"STARTING SERVICE {service_name}....")
-        os.system(f"sudo systemctl start {service_name}.service") # iniciem servei
-
-    # un cop finalitzat sortim
-    sys.exit(0)
 tb = telebot.TeleBot('5042109408:AAHBrCsNiuI3lXBEiLjmyxqXapX4h1LHbJs')
 
 def init():
@@ -440,17 +325,14 @@ def init():
     time.sleep(0.05)
     check_logs()  # Comprovem logs
     time.sleep(0.05)
-    makeservice = args()  # Carreguem arguments.
+    makeservice, proxyfile = args()  # Carreguem arguments.
     time.sleep(0.05)
-    # si ha escollit makeservice, executem funcio
-    if makeservice:
-        make_service()
 
-    #db_module.create_bbdd_mysql(host_bbdd, user_bbdd, passwd_bbdd, bbdd_name)  # crear bbdd mysql
-    db_module.check_bbdd_mysql(host_bbdd, user_bbdd, passwd_bbdd, bbdd_name, __version__)   # comprovem si la bbdd de mysq existeix, sino sortim
+    db_client = db_module.check_bbdd_mongodb(config_db_mongodb)   # comprovem la connexió amb la bbdd
+
     logging.debug('DEBUGGING ENABLE')
     time.sleep(0.05)
-    info_message = check_file_config()  # Comprovem el fitxer
+    info_message = check_file_config(db_client, config_db_mongodb['db_name'])  # Comprovem el fitxer
     time.sleep(0.05)
 
     # Validem el temps d'actualitzacio

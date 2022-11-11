@@ -1,11 +1,8 @@
-import logging, sys, pymysql.cursors
+import logging, sys, datetime, pymongo
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import Column, Integer, String, Float, DateTime
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_marshmallow import Marshmallow
 
 def create_engine_sqlite_db(db_type, db_name, db_path_name, db_file_name):
     # Table Names
@@ -67,82 +64,31 @@ def create_table_bbdd_flat(tablename, Base):
 
     return Flat
 
-def create_bbdd_mysql(host_bbdd, user_bbdd, passwd_bbdd, bbdd_name):
+def insert_host_mongodb(db_client, db_name, data_host):
     try:
-        connection = pymysql.connect(host=host_bbdd,
-                                     user=user_bbdd,
-                                     port=3306,
-                                     password=passwd_bbdd)
-        logging.info(f"CONNECTED TO MYSQL DATABASE")
+        db = db_client[db_name]
+        db.sr_connections.insert_one({"id": data_host['id'],
+                          "chat_id": data_host['chat_id'],
+                          "group_name": data_host['chat_id'],
+                          "time_refresh": data_host['refresh'],
+                          "max_price": data_host['max_price'],
+                          "urls": data_host['urls'],
+                          "so": data_host['so'],
+                          "host_name": data_host['host_name'],
+                          "datetime": datetime.datetime.now()
+                          })
     except:
-        logging.error(f"ERROR WHILE CONNECTING MYSQL DATABASE")
+        logging.error(f"ERROR WHILE INSERTING MONGODB")
         sys.exit()
 
+    logging.debug(f"INSERT TO MONGODB: {data_host}")
+
+def check_bbdd_mongodb(config_bbdd):
     try:
-        with connection.cursor() as cursor:
-            cursor.execute(f'CREATE DATABASE {bbdd_name}')
-            logging.info(f'MAKING DATABASE {bbdd_name}')
-
-        cursor.close()
-        connection.close()
+        client = pymongo.MongoClient(f"mongodb+srv://{config_bbdd['db_user']}:{config_bbdd['db_password']}@{config_bbdd['db_host']}/?retryWrites=true&w=majority")
     except:
-        # connection.close()
-        logging.info(f'MYSQL DATABASE {bbdd_name} EXISTS')
-
-def create_table_bbdd_mysql(host_bbdd, user_bbdd, passwd_bbdd, bbdd_name, table_name):
-    app = Flask(__name__)
-    #app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://realestates:1yUCVhoswC*@18.159.45.101/barcelona'
-    app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{user_bbdd}:{passwd_bbdd}@{host_bbdd}/{bbdd_name}'
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-    db = SQLAlchemy(app)
-    # ma = Marshmallow(app)
-
-    class User_connection(db.Model):
-        __tablename__ = table_name
-        id = db.Column(db.String(15), primary_key=True)
-        chat_id = db.Column(db.String(15))
-        group_name = db.Column(db.String(30))
-        time_refresh = db.Column(db.Integer)
-        max_price = db.Column(db.Integer)
-        urls = db.Column(db.String(800))
-        so = db.Column(db.String(80))
-        host_name = db.Column(db.String(80))
-        datetime = db.Column(db.DateTime)
-
-        def __init__(self, id, chat_id, group_name, time_refresh, max_price, urls, so, host_name, datetime):
-            self.group_name = group_name
-            self.id = id
-            self.chat_id = chat_id
-            self.group_name = group_name
-            self.time_refresh = time_refresh
-            self.max_price = max_price
-            self.urls = urls
-            self.so = so
-            self.host_name = host_name
-            self.datetime = datetime
-
-    db.create_all()
-
-    return User_connection, db
-
-def check_bbdd_mysql(host_bbdd, user_bbdd, passwd_bbdd, bbdd_name, __version__):
-    try:
-        connection = pymysql.connect(host=host_bbdd,
-                                     user=user_bbdd,
-                                     port=3306,
-                                     password=passwd_bbdd)
-        logging.info(f"CONNECTED TO MYSQL DATABASE")
-    except:
-        logging.error(f"ERROR WHILE CONNECTING MYSQL DATABASE")
+        logging.error(f"ERROR WHILE CONNECTING MONGODB")
         sys.exit()
 
-    with connection.cursor() as cursor:
-        # SHOW TABLES LIKE "customer_data";
-        nmatch = cursor.execute(f"SHOW DATABASES LIKE '{bbdd_name}'")
-
-        if nmatch != 1:
-            logging.error(f"DATABASE {bbdd_name} NOT EXISTS. PROBABLY THIS __version__ ({__version__}) IS NOT SUPPORTED.")
-            sys.exit()
-
-    logging.debug(f'MYSQL DATABASE {bbdd_name} EXISTS')
+    logging.debug(f"CONNECTED TO MONGODB")
+    return client
