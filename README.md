@@ -63,10 +63,14 @@ Para evitar que se cierre y dejarlo en segundo plano (en una máquina Linux):
 ```
 nohup python3 main.py &
 ```
+- Para ver los logs podemos ejecutar:
+```
+cat nohup.out
+```
 
 ## 2. Editar la configuración
 
-- Si hemos visto os logs veremos que el progama esta esperando que le entremos la configuración mediante una URL. Para ellos vamos a la siguiente:
+- Si hemos visto los logs veremos que el programa, un vez ejecutado, esta esperando que le entremos la configuración mediante una URL. Para ello vamos a la siguiente:
 ```
 http://127.0.0.1:8080/
 ```
