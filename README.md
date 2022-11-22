@@ -5,11 +5,10 @@ Este programa en Python escrapea varios portales inmobiliarios y posteriormente 
 ## Requisitos
 
 - Windows, Mac o Linux
-- Python >= 3.9
-- Pip 3
 - Conexión a internet
 - Canal de Telegram (ver más abajo)
-- <b><a href="https://t.me/scrapyrealestate_testing">Grupo de Telegram Testing</a> (Ayuda y resolución de problemas/dudas)</b>
+- <b><a href="https://t.me/scrapyrealestate">Grupo de Telegram</a> (Ayuda y resolución de problemas/dudas)</b>
+- Docker o Python>3.8 y pip3
 
 ## 1. Instalación
 ### Instalación con Docker (Recomendada)
