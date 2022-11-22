@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Scrapyrealestate</title>
+</head>
+<body>
+<form action="/data" method="post">
+  <p>
+    <label>scrapy_rs_name</label><br>
+    <input type="text" id="scrapy_rs_name" name="scrapy_rs_name" required
+       minlength="4"size="20"
+  </p>
+  <p>
+    <label>log_level</label><br>
+    <select name="log_level">
+      <option>debug</option>
+      <option selected="selected">info</option>
+      <option>warning</option>
+      <option>error</option>
+      <option>critical</option>
+    </select>
+  </p>
+  <p>
+    <label>log_level_scrapy</label><br>
+    <select name="log_level_scrapy">
+      <option>debug</option>
+      <option>info</option>
+      <option selected="selected">warning</option>
+      <option>error</option>
+      <option>critical</option>
+    </select>
+  </p>
+  <p>
+    <label>scrapy_time_update</label><br>
+    <input type="number" name="time_update" min="300" placeholder=900 required>
+  </p>
+  <p>
+    <label>telegram_chatuserID</label><br>
+    <input type="number" name="telegram_chatuserID" placeholder=-1001647968000 required>
+  </p>
+  <p>
+    <label>max_price</label><br>
+    <input type="number" name="max_price" min="0" placeholder="0 = nolimit" required>
+  </p>
+  <p>
+    <label for="url">IDEALISTA URL</label><br>
+    <input type="url" name="url_idealista" id="url_idealista"
+           placeholder="https://www.idealista.com/alquiler-viviendas/barcelona-barcelona/" size="200"
+           required>
+    <label>proxy_idealista: </label>
+    <select name="proxy_idealista">
+      <option>on</option>
+      <option>off</option>
+    </select>
+  </p>
+  <p>
+    <label for="url">PISOSCOM URL</label><br>
+    <input type="url" name="url_pisoscom" id="url_pisoscom"
+           placeholder="https://www.pisos.com/alquiler/pisos-barcelona/" size="200"
+           required>
+  </p>
+  <p>
+    <label for="url">FOTOCASA URL</label><br>
+    <input type="url" name="url_fotocasa" id="url_fotocasa"
+           placeholder="https://www.fotocasa.es/ca/lloguer/habitatges/girona-capital/totes-les-zones/l?sortType=publicationDate&latitude=41.983&longitude=2.8253&combinedLocationIds=724,9,17,241,426,17079,0,0,0" size="200"
+           required>
+  </p>
+  <p>
+    <label for="url">HABITACLIA URL</label><br>
+    <input type="url" name="url_habitaclia" id="url_habitaclia"
+           placeholder="https://www.habitaclia.com/alquiler-girona.htm" size="200"
+           required>
+  </p>
+  <!--
+  <p>
+    <label>
+      <input type="checkbox" value="terms">
+      I agree to the <a href="/terms">terms and conditions</a>
+    </label>
+  </p>
+  -->
+  <p>
+    <button>Start</button>
+    <button type="reset">Reset form</button>
+  </p>
+</form>
+</body>
+</html>

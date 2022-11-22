@@ -1,16 +1,13 @@
 version: '3.9'
 
 services:
-  app:
-    image: scrapyrealestate/mferark
+  scrapyrealestate:
+    image: mferark/scrapyrealestate
     container_name: scrapyrealestate
-    volumes:
-      # - %USERPROFILE%
-      - ~/Dropbox/code/docker/utils/scrapyrealestate/:/scrapyrealestate/
+    ports:
+      - 8080:8080
 
     restart: always
     stdin_open: true # docker run -i
     tty: true        # docker run -t
-
-volumes:
-  ansible: {}
+    #network_mode: host
