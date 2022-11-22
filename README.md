@@ -27,7 +27,7 @@ Este programa en Python escrapea varios portales inmobiliarios y posteriormente 
       ```
     - Bajamos la ultima imagen
       ```
-      docker-compose pull.
+      docker-compose pull
       ```
     - Vamos al directorio y ejecutamos el contenedor con docker-compose.
       ```
