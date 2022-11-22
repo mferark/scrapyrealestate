@@ -71,7 +71,7 @@ cat nohup.out
 
 - Si hemos visto los logs veremos que el programa, una vez ejecutado, está esperando que le entremos la configuración mediante una URL. Para ello vamos a la siguiente:
 ```
-http://127.0.0.1:8080/
+http://localhost:8080/
 ```
 
 - Dentro és necesario completar algunos parámetros:
