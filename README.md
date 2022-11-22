@@ -75,15 +75,14 @@ http://127.0.0.1:8080/
 ```
 
 - Dentro és necesario completar algunos parámetros:
-
-- **scrapy_rs_name** Nombre del programa.
-- **log_level** Nivel de log mínimos que muestra el script. Por defecto INFO.
-- **log_level_scrapy** Nivel de log mínimos que muestra python scrapy. Por defecto WARNING.
-- **scrapy_time_update** Tiempo entre cada búsqueda (mínimo 300, en segundos).
-- **telegram_chatuserID** El valor se obtiene de un canal de Telegram. Tenemos que crear previamente uno, si no lo tenemos ya, y obtener el chat id (ver más abajo).
-- **max_price** Precio a mostrar máximo. Sí no queremos límite usamos 0.
-- **urls:** Introducir las URL de idealista, pisos.com, fotocasa y habitaclia. En el caso de fotocasa necesita tener ordenación de las viviendas más recientes. Recomendado para ciudades pequeñas, barrios medianos y pueblos, ya que solo coge las 2 primeras viviendas de la página. Actualmente no es muy funcional.
-- **proxy_idealista** Por seguridad y evitar que baneen nuestra IP, es recomendable su uso. Aún así al ser proxys gratuitos en ocasiones no son muy eficientes.
+  - **scrapy_rs_name** Nombre del programa.
+  - **log_level** Nivel de log mínimos que muestra el script. Por defecto INFO.
+  - **log_level_scrapy** Nivel de log mínimos que muestra python scrapy. Por defecto WARNING.
+  - **scrapy_time_update** Tiempo entre cada búsqueda (mínimo 300, en segundos).
+  - **telegram_chatuserID** El valor se obtiene de un canal de Telegram. Tenemos que crear previamente uno, si no lo tenemos ya, y obtener el chat id (ver más abajo).
+  - **max_price** Precio a mostrar máximo. Sí no queremos límite usamos 0.
+  - **urls:** Introducir las URL de idealista, pisos.com, fotocasa y habitaclia. En el caso de fotocasa necesita tener ordenación de las viviendas más recientes. Recomendado para ciudades pequeñas, barrios medianos y pueblos, ya que solo coge las 2 primeras viviendas de la página. Actualmente no es muy funcional.
+  - **proxy_idealista** Por seguridad y evitar que baneen nuestra IP, es recomendable su uso. Aún así al ser proxys gratuitos en ocasiones no son muy eficientes.
 
 ### Crear canal Telegram y obtener chat id
 - **Crear el canal** en Telegram. Lo podemos hacer privado o público. Lo ideal es que fuera público y poder compartirlo para que más gente pueda usarlo. La intención de todo eso es intentar crear una red con esos grupos públicos y que puedan encontrarse en un sitio unificado. De momento se iran guardando todos estos grupos en una base de datos externa para más adelante poder generar esta red.
