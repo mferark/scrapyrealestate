@@ -122,6 +122,12 @@ def get_config_flask(pid):
 
 def get_urls():
     urls = {}
+
+    # sino hi ha urls, sortim
+    if data['url_idealista'] == '' and data['url_pisoscom'] == '' and data['url_fotocasa'] == '' and data['url_habitaclia'] == '':
+        logger.warning("NO URLS ENTERED (MINIUM 1 URL)")
+        sys.exit()
+
     try:
         start_urls_idealista = [data['url_idealista']]
         start_urls_idealista = [url + '?ordenado-por=fecha-publicacion-desc' for url in start_urls_idealista]
@@ -156,7 +162,7 @@ def check_config(db_client, db_name):
     # creem l'objecte per enviar tg
     tb = telebot.TeleBot('5042109408:AAHBrCsNiuI3lXBEiLjmyxqXapX4h1LHbJs')
 
-    # Sinó existeix el fitxer scrapy.cfg, sortim
+    # Sino existeix el fitxer scrapy.cfg, sortim
     if not path.exists("scrapy.cfg"):
         logger.error("NOT FILE FOUND scrapy.cfg")
         sys.exit()
