@@ -273,6 +273,8 @@ def scrap_realestate(telegram_msg):
     for url in urls:
         # Mirem quin portal es ['idealista', 'pisoscom', 'fotocasa', 'habitaclia', 'yaencontre', 'enalquiler' ]
         # try:
+        if url == '':
+            continue
         portal_url = url.split('/')[2]
         portal_name = portal_url.split('.')[1]
         try:
@@ -374,10 +376,10 @@ def init():
             telegram_msg = True
             logger.debug('TELEGRAM MSG ENABLED')
         # Fem scraping a aquesta zona
-        try:
-            scrap_realestate(telegram_msg)
-        except:
-            pass
+        #try:
+        scrap_realestate(telegram_msg)
+        #except:
+        #    pass
 
         count += 1  # Sumem 1 cicle
         end_time = time.time()
