@@ -24,8 +24,8 @@ Este programa en Python escrapea varios portales inmobiliarios y posteriormente 
     - O bien, usando docker-compose (a veces hay que instalarlo por separado de docker).
       - Descargamos el archivo docker-compose.yaml en un directorio nuevo.
         ```
-        curl https://raw.githubusercontent.com/mferark/scrapyrealestate/master/docker-compose.yaml -O docker-compose.yaml
-        curl https://raw.githubusercontent.com/mferark/scrapyrealestate/master/docker-compose-arm.yaml -O docker-compose.yaml
+        curl -o docker-compose.yaml https://raw.githubusercontent.com/mferark/scrapyrealestate/master/docker-compose.yaml
+        curl -o docker-compose.yaml https://raw.githubusercontent.com/mferark/scrapyrealestate/master/docker-compose-arm.yaml
         ```
       - Bajamos la ultima imagen
         ```
