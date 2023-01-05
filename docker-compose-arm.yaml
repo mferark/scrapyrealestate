@@ -1,0 +1,13 @@
+version: '3.9'
+
+services:
+  scrapyrealestate:
+    image: mferark/scrapyrealestate-arm
+    container_name: scrapyrealestate-arm
+    ports:
+      - 8080:8080
+
+    restart: always
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+    #network_mode: host

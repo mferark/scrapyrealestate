@@ -13,25 +13,28 @@ Este programa en Python escrapea varios portales inmobiliarios y posteriormente 
 ## 1. Instalación
 ### Instalación con Docker (Recomendada)
 - Instalar Docker.
-- Ahora tenemos dos opciones: 
-  - Descargamos la imagen y la ejecutamos manualmente.
-    ```
-    docker pull mferark/scrapyrealestate
-    docker run -d -p 8080:8080 --name scrapyrealestate mferark/scrapyrealestate
-    ```
-  - O bien, usando docker-compose (a veces hay que instalarlo por separado de docker).
-    - Descargamos el archivo docker-compose.yaml en un directorio nuevo.
+  - Ahora tenemos dos opciones (los comandos repetidos son para dispositivos arm -raspberry o similar-):
+    - Descargamos la imagen y la ejecutamos manualmente.
       ```
-      curl https://raw.githubusercontent.com/mferark/scrapyrealestate/master/docker-compose.yaml -O docker-compose.yaml
+      docker pull mferark/scrapyrealestate
+      docker pull mferark/scrapyrealestate-arm
+      docker run -d -p 8080:8080 --name scrapyrealestate mferark/scrapyrealestate
+      docker run -d -p 8080:8080 --name scrapyrealestate-arm mferark/scrapyrealestate-arm
       ```
-    - Bajamos la ultima imagen
-      ```
-      docker-compose pull
-      ```
-    - Vamos al directorio y ejecutamos el contenedor con docker-compose.
-      ```
-      docker-compose up -d
-      ```
+    - O bien, usando docker-compose (a veces hay que instalarlo por separado de docker).
+      - Descargamos el archivo docker-compose.yaml en un directorio nuevo.
+        ```
+        curl https://raw.githubusercontent.com/mferark/scrapyrealestate/master/docker-compose.yaml -O docker-compose.yaml
+        curl https://raw.githubusercontent.com/mferark/scrapyrealestate/master/docker-compose-arm.yaml -O docker-compose.yaml
+        ```
+      - Bajamos la ultima imagen
+        ```
+        docker-compose pull
+        ```
+      - Vamos al directorio y ejecutamos el contenedor con docker-compose.
+        ```
+        docker-compose up -d
+        ```
     
 - Para ver los logs podemos ejecutar:
 ```
