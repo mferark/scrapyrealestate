@@ -152,4 +152,9 @@ def json_to_bbdd(json_file_name, scrapy_rs_name, db_engine, session, Base, max_p
                     session.commit()  # Fem el commit a la BBDD
                     time.sleep(3.05)
 
-    logger.info(f"SPIDER {scrapy_rs_name.upper()} FINISHED - [NEW: {len(new_urls)}] [TOTAL: {len(data_json)}]: {new_urls}")
+    if len(new_urls) > 0:
+        logger.info(
+            f"SPIDER FINISHED - [NEW: {len(new_urls)}] [TOTAL: {len(data_json)}]: {new_urls}")
+    else:
+        logger.debug(
+            f"SPIDER FINISHED - [NEW: {len(new_urls)}] [TOTAL: {len(data_json)}]: {new_urls}")

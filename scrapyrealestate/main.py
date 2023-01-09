@@ -10,7 +10,7 @@ import urllib.request, json
 __author__ = "mferark"
 __author__ = "mferarg@gmail.com"
 __license__ = "GPL"
-__version__ = "2.0"
+__version__ = "2.01"
 
 # Parameters
 config_db_mongodb = {
@@ -77,7 +77,7 @@ def check_directories():
         os.makedirs('data')
 
     # Eliminem tots els arxius json
-    del_json('./data')
+    #del_json('./data')
 
 def check_url(url):
     try:
@@ -100,7 +100,7 @@ def init_app_flask():
             proces_server = subprocess.Popen('python3 ./scrapyrealestate/flask_server.py &', shell=True)
         #proces_server.wait()
         pid = proces_server.pid
-        real_pid = pid + 1 # +1 perque el pid real sempre es un nombre superior
+        real_pid = pid + 1 # +1 perque el pid real sempre es un numero mes
         #proces_server.terminate()
     else:
         real_pid = os.popen('pgrep python ./scrapyrealestate/flask_server.py').read()
@@ -351,9 +351,22 @@ def init():
     time.sleep(1)
     check_directories()  # Comprovem directoris
     time.sleep(0.05)
-    pid = init_app_flask()  # iniciem  flask a localhost:8080
-    get_config_flask(pid) # agafem les dades de la configuració
+    # Sino existeix el fitxer de configuració agafem les dades de la web
+    if not os.path.isfile('./data/config.json'):
+        pid = init_app_flask()  # iniciem  flask a localhost:8080
+        get_config_flask(pid)   # agafem les dades de la configuració
+    else:
+        with open('./data/config.json') as json_file:
+            global data
+            data = json.load(json_file)
+
     logger = init_logs() # iniciem els logs
+    time.sleep(0.05)
+    # Mirem el time update
+    if int(data['time_update']) < 300:
+        logger.error("TIME UPDATE < 300")
+        sys.exit()
+
     time.sleep(0.05)
     db_client = db_module.check_bbdd_mongodb(config_db_mongodb, logger)   # comprovem la connexió amb la bbdd
     time.sleep(0.05)
@@ -365,10 +378,15 @@ def init():
     telegram_msg = False
     # logger.debug(f'SCRAPING FLATS (LOOP {count})')
     # noinit = False
+    scrapy_rs_name = data['scrapy_rs_name'].replace("-", "_")
 
     while True:
-        del_json('./data')  # Eliminem arxius json de data
-        logger.debug('DEBUGGING ENABLE')
+        try:
+            os.remove(f"./data/{scrapy_rs_name}.json")  # Eliminem l'arxiu json
+        except:
+            pass
+
+        #logger.debug('DEBUGGING ENABLED')
         time.sleep(0.05)
         start_time = time.time()
         # Quan ja haguem passat al segon cicle, canviem telegram_msg a true per enviar els missatges
@@ -376,10 +394,10 @@ def init():
             telegram_msg = True
             logger.debug('TELEGRAM MSG ENABLED')
         # Fem scraping a aquesta zona
-        #try:
-        scrap_realestate(telegram_msg)
-        #except:
-        #    pass
+        try:
+            scrap_realestate(telegram_msg)
+        except:
+            pass
 
         count += 1  # Sumem 1 cicle
         end_time = time.time()

@@ -45,7 +45,7 @@ docker logs ID_CONTENEDOR
 docker ps
 ```
 
-### Instalación sin docker, Python y paquetes
+### Instalación sin Docker, Python y paquetes
 - Instalar Python 3 (mínimo 3.9).
 - Instalar los diferentes paquetes del archivo requirements.txt. Tanto si ya tenemos otros paquetes instalados como si no, es recomendable crear un <a href="https://docs.python.org/es/3/tutorial/venv.html">entorno virtual</a> de python que evitará posibles incopatibilidades.
 ```
@@ -86,7 +86,10 @@ http://localhost:8080/
   - **max_price** Precio a mostrar máximo. Sí no queremos límite usamos 0.
   - **urls** Introducir las URL de idealista, pisos.com, fotocasa y habitaclia. En el caso de fotocasa necesita tener ordenación de las viviendas más recientes. Recomendado para ciudades pequeñas, barrios medianos y pueblos, ya que solo coge las 2 primeras viviendas de la página. Actualmente no es muy funcional.
   - **proxy_idealista** Por seguridad y evitar que baneen nuestra IP, es recomendable su uso. Aún así al ser proxys gratuitos en ocasiones no son muy eficientes.
-  
+
+
+- También podemos modificar el archivo **config.json** dentro la carpeta data. Siempre que exista no serà necesario introducir los datos via url.
+
 ### Crear canal Telegram y obtener chat id
 - **Crear el canal** en Telegram. Lo podemos hacer privado o público. Lo ideal es que fuera público y poder compartirlo para que más gente pueda usarlo. La intención de todo eso es intentar crear una red con esos grupos públicos y que puedan encontrarse en un sitio unificado. De momento se iran guardando todos estos grupos en una base de datos externa para más adelante poder generar esta red.
 - **Añadir al canal el bot @scrapyrealestatebot** con permisos para poder publicar mensajes. Eso es necesario para que se publiquen correctamente las viviendas en el canal. Si no está bien añadido, el programa no iniciara.
