@@ -88,7 +88,7 @@ http://localhost:8080/
   - **proxy_idealista** Por seguridad y evitar que baneen nuestra IP, es recomendable su uso. Aún así al ser proxys gratuitos en ocasiones no son muy eficientes.
 
 
-- También podemos modificar el archivo **config.json** dentro la carpeta data. Siempre que exista no serà necesario introducir los datos via url.
+- También podemos modificar el archivo **config.json** dentro de la carpeta data. Siempre que exista no serà necesario introducir los datos via URL.
 
 ### Crear canal Telegram y obtener chat id
 - **Crear el canal** en Telegram. Lo podemos hacer privado o público. Lo ideal es que fuera público y poder compartirlo para que más gente pueda usarlo. La intención de todo eso es intentar crear una red con esos grupos públicos y que puedan encontrarse en un sitio unificado. De momento se iran guardando todos estos grupos en una base de datos externa para más adelante poder generar esta red.
