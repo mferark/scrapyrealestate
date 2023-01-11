@@ -382,11 +382,11 @@ def init():
             telegram_msg = True
             logger.debug('TELEGRAM MSG ENABLED')
 
-        #try:
+        try:
         # Cridem la funció d'scraping
         scrap_realestate(db_client, config_db_mongodb['db_name'], telegram_msg)
-        #except:
-        #    pass
+        except:
+            pass
 
         count += 1  # Sumem 1 cicle
         logger.debug(f"SLEEPING {data['time_update']} SECONDS")
