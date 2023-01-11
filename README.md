@@ -7,13 +7,13 @@ Este programa en Python escrapea varios portales inmobiliarios y posteriormente 
 - Windows, Mac o Linux
 - Conexión a internet
 - Canal de Telegram (ver más abajo)
-- <b><a href="https://t.me/scrapyrealestate">Grupo de Telegram</a> (Ayuda y resolución de problemas/dudas)</b>
+- <a href="https://t.me/scrapyrealestate">Grupo de Telegram</a> (Ayuda y resolución de problemas/dudas)
 - Docker o Python>3.8 y pip3
 
 ## 1. Instalación
 ### Instalación con Docker (Recomendada)
 - Instalar Docker.
-  - Ahora tenemos dos opciones (los comandos repetidos son para dispositivos arm -raspberry o similar-):
+  - Ahora tenemos dos opciones (los comandos repetidos son para dispositivos arm -raspberry o similar de 64bits-):
     - Descargamos la imagen y la ejecutamos manualmente.
       ```
       docker pull mferark/scrapyrealestate
