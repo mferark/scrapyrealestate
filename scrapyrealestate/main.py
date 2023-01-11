@@ -74,6 +74,9 @@ def del_json_flats(dir):
 def get_config():
     # Sino existeix el fitxer de configuració agafem les dades de la web
     if not os.path.isfile('./data/config.json'):
+        # Mirem si existeix el directori data i logs, sinó el creem.
+        if not os.path.exists('data'):
+            os.makedirs('data')
         pid = init_app_flask()  # iniciem  flask a localhost:8080
         get_config_flask(pid)  # agafem les dades de la configuració
     else:
@@ -175,9 +178,6 @@ def check_config(db_client, db_name):
     return info_message
 
 def checks():
-    # Mirem si existeix el directori data i logs, sinó el creem.
-    if not os.path.exists('data'):
-        os.makedirs('data')
     # Mirem el time update
     if int(data['time_update']) < 300:
         logger.error("TIME UPDATE < 300")
@@ -384,7 +384,7 @@ def init():
 
         try:
         # Cridem la funció d'scraping
-        scrap_realestate(db_client, config_db_mongodb['db_name'], telegram_msg)
+            scrap_realestate(db_client, config_db_mongodb['db_name'], telegram_msg)
         except:
             pass
 
