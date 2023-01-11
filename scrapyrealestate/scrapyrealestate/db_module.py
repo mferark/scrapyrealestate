@@ -48,7 +48,8 @@ def insert_flat_mongodb(db_client, db_name, data_flat, logger):
                           "datetime": datetime.datetime.now()
                           })
     except:
-        logger.error(f"ERROR WHILE INSERTING MONGODB. MAYBE YOU ARE NOT USING LAST VERSION.")
+        #logger.error(f"ERROR WHILE INSERTING MONGODB. MAYBE YOU ARE NOT USING LAST VERSION.")
+        pass
 
 def check_bbdd_mongodb(config_bbdd, logger):
     try:

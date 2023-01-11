@@ -146,11 +146,8 @@ def json_to_bbdd(json_file_name, scrapy_rs_name, db_engine, session, Base, max_p
                 'floor': floor,
                 'href': href
             }
-            # Guardem la vivenda a la bbdd de mongo
-            try:
-                db_module.insert_flat_mongodb(db_client, 'scrapyrealestate', data_flat, logger)
-            except:
-                pass
+            # Guardem la vivenda a la bbdd de mongo #  db.sr_lats.createIndex({id: 1},{unique: true})
+            db_module.insert_flat_mongodb(db_client, 'scrapyrealestate', data_flat, logger)
 
             # Si el preu es <= max_price
             if int(price) <= int(max_price) or int(max_price) == 0:
