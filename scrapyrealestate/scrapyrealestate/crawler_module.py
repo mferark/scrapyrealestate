@@ -1,5 +1,6 @@
 import datetime, json, telebot, time
 from sqlalchemy import Column, Integer, String, DateTime
+import scrapyrealestate.db_module as db_module
 
 def make_flat(tablename, Base):
     '''
@@ -41,7 +42,7 @@ def make_flat(tablename, Base):
 
     return Flat
 
-def json_to_bbdd(json_file_name, scrapy_rs_name, db_engine, session, Base, max_price, tg_chatID, telegram_msg, logger):
+def json_to_bbdd(json_file_name, scrapy_rs_name, db_engine, session, Base, max_price, tg_chatID, db_client, db_name, telegram_msg, logger):
     '''
     Funció que llegeix un json dels habitatges amb les seves propietats.
     Compara si n'hi ha cap que no estigui a la bbdd i notifica amb missatge.
@@ -135,22 +136,40 @@ def json_to_bbdd(json_file_name, scrapy_rs_name, db_engine, session, Base, max_p
 
         # Si la id no està a la bbdd (bbdd_exists = False), creem objecte (tambe a la bbdd) i avisem per telegram
         if not bbdd_exists:
-            currentDateTime = datetime.datetime.now()
+            # data
+            data_flat = {
+                'id': flat_id,
+                'title': title,
+                'price': price,
+                'rooms': rooms,
+                'm2': m2,
+                'floor': floor,
+                'href': href
+            }
+            # Guardem la vivenda a la bbdd de mongo
+            try:
+                db_module.insert_flat_mongodb(db_client, 'scrapyrealestate', data_flat, logger)
+            except:
+                pass
 
-            if telegram_msg:
-                if int(price) <= int(max_price) or int(max_price) == 0:  # Enviar missatge a telegram si es True i el preu es <= max_price
+            # Si el preu es <= max_price
+            if int(price) <= int(max_price) or int(max_price) == 0:
+                # Creem objecte flat (tambe a la bbdd)
+                flat = Flat(flat_id, title, price, rooms, m2, floor, href, datetime.datetime.now())
+                session.add(flat)
+                session.commit()  # Fem el commit a la BBDD
+                logger.debug(f'{href} ADDED TO BBDD')
+
+                # Enviar missatge a telegram si es True
+                if telegram_msg:
                     new_urls.append(href)
-                    # Enviem missatge tg del preu, m2, mitjana i href
-                    try: mitja_price_m2 = '%.2f' % (price / float(m2))
-                    except: mitja_price_m2 = ''
+                    try: mitja_price_m2 = '%.2f' % (price / float(m2)) # Formatem tg del preu, m2, mitjana i href
+                    except:
+                        mitja_price_m2 = ''
                     tb.send_message(tg_chatID, f"<b>{price_str}</b> [{m2_tg}] → {mitja_price_m2}€/m²\n{href}", parse_mode='HTML')
-                    # Creem objecte flat (tambe a la bbdd)
-                    flat = Flat(flat_id, title, price, rooms, m2, floor, href, currentDateTime)
-                    logger.debug(f'ADDING {href} TO BBDD {scrapy_rs_name.upper()}')
-                    logger.debug(f'SENDING {href} TO TELEGRAM GROUP')
-                    session.add(flat)
-                    session.commit()  # Fem el commit a la BBDD
+                    logger.debug(f'{href} SENT TO TELEGRAM GROUP')
                     time.sleep(3.05)
+                time.sleep(0.10)
 
     if len(new_urls) > 0:
         logger.info(

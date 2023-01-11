@@ -3,19 +3,12 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-def create_engine_sqlite_db(db_type, db_name, db_path_name, db_file_name, logger):
-    # Table Names
-    REALESTATE_IDEALISTA = db_name
-
+def create_engine_sqlite_db(db_name, db_path_name, db_file_name, logger):
     # Crear engine
-    # Afegim ?check_same_thread=False per evitar l'error "SQLite objects created in a thread can only be used in that same thread."
-    # db_engine = create_engine(f'sqlite:///{db_path_name}/{db_file_name}?check_same_thread=False')
     db_engine = create_engine(f'sqlite:///{db_path_name}/{db_file_name}')
-    #db_engine = create_engine("mysql+pymysql://realestates:1yUCVhoswC*@18.159.45.101")
 
     # Crear sessio
     Session = sessionmaker(bind=db_engine)
-    # Session = scoped_session(sessionmaker(bind=db_engine))
     session = Session()
 
     # Creem classe base (Esta clase será de la que hereden todos los modelos y tiene la capacidad de realizar el mapeo correspondiente a partir de la metainformación)
@@ -37,16 +30,31 @@ def insert_host_mongodb(db_client, db_name, data_host, logger):
                           "datetime": datetime.datetime.now()
                           })
     except:
-        logger.error(f"ERROR WHILE INSERTING MONGODB")
+        logger.error(f"ERROR WHILE INSERTING MONGODB. MAYBE YOU ARE NOT USING LAST VERSION.")
         sys.exit()
 
     logger.debug(f"INSERT TO MONGODB: {data_host}")
+
+def insert_flat_mongodb(db_client, db_name, data_flat, logger):
+    try:
+        db = db_client[db_name]
+        db.sr_flats.insert_one({"id": data_flat['id'],
+                          "title": data_flat['title'],
+                          "price": data_flat['price'],
+                          "rooms": data_flat['rooms'],
+                          "m2": data_flat['m2'],
+                          "floor": data_flat['floor'],
+                          "href": data_flat['href'],
+                          "datetime": datetime.datetime.now()
+                          })
+    except:
+        logger.error(f"ERROR WHILE INSERTING MONGODB. MAYBE YOU ARE NOT USING LAST VERSION.")
 
 def check_bbdd_mongodb(config_bbdd, logger):
     try:
         client = pymongo.MongoClient(f"mongodb+srv://{config_bbdd['db_user']}:{config_bbdd['db_password']}@{config_bbdd['db_host']}/?retryWrites=true&w=majority")
     except:
-        logger.error(f"ERROR WHILE CONNECTING MONGODB")
+        logger.error(f"ERROR WHILE CONNECTING MONGODB. MAYBE YOU ARE NOT USING LAST VERSION.")
         sys.exit()
 
     logger.debug(f"CONNECTED TO MONGODB")

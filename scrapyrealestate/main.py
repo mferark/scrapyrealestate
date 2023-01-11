@@ -10,7 +10,7 @@ import urllib.request, json
 __author__ = "mferark"
 __author__ = "mferarg@gmail.com"
 __license__ = "GPL"
-__version__ = "2.01"
+__version__ = "2.02"
 
 # Parameters
 config_db_mongodb = {
@@ -71,92 +71,15 @@ def del_json_flats(dir):
         if f != 'config.json':
             os.remove(os.path.join(dir, f))
 
-def check_directories():
-    # Mirem si existeix el directori data i logs, sinó el creem.
-    if not os.path.exists('data'):
-        os.makedirs('data')
-
-    # Eliminem tots els arxius json
-    #del_json('./data')
-
-def check_url(url):
-    try:
-        url_code = urllib.request.urlopen(url).getcode()
-    except:
-        url_code = 404
-
-    return url_code
-
-def init_app_flask():
-    # comprovem si el servidor està engengat.
-    # si no trobem cap pàgina a localhost:8080 executem el servidor
-    localhost_code = check_url("http://localhost:8080")
-    if localhost_code != 200:
-        try:
-            #os.system('python ./scrapyrealestate/flask_server.py &')
-            proces_server = subprocess.Popen('python ./scrapyrealestate/flask_server.py &', shell=True)
-        except:
-            #os.system('python3 ./scrapyrealestate/flask_server.py &')
-            proces_server = subprocess.Popen('python3 ./scrapyrealestate/flask_server.py &', shell=True)
-        #proces_server.wait()
-        pid = proces_server.pid
-        real_pid = pid + 1 # +1 perque el pid real sempre es un numero mes
-        #proces_server.terminate()
+def get_config():
+    # Sino existeix el fitxer de configuració agafem les dades de la web
+    if not os.path.isfile('./data/config.json'):
+        pid = init_app_flask()  # iniciem  flask a localhost:8080
+        get_config_flask(pid)  # agafem les dades de la configuració
     else:
-        real_pid = os.popen('pgrep python ./scrapyrealestate/flask_server.py').read()
-
-    return real_pid
-
-def get_config_flask(pid):
-    while True:
-        try:
-            # si trobem info a localhost:8080/data guardem les dades i sortim del bucle
-            with open('./data/config.json') as json_file:
-                global data
-                data = json.load(json_file)
-                os.system(f'kill {pid}')  # matem el proces del servidor web
-                break
-        except:
-            pass
-        time.sleep(1)
-
-def get_urls():
-    urls = {}
-
-    # sino hi ha urls, sortim
-    if data['url_idealista'] == '' and data['url_pisoscom'] == '' and data['url_fotocasa'] == '' and data['url_habitaclia'] == '':
-        logger.warning("NO URLS ENTERED (MINIUM 1 URL)")
-        sys.exit()
-
-    try:
-        start_urls_idealista = [data['url_idealista']]
-        start_urls_idealista = [url + '?ordenado-por=fecha-publicacion-desc' for url in start_urls_idealista]
-    except:
-        start_urls_idealista = ['https://www.idealista.com/']
-
-    try:
-        start_urls_pisoscom = [data['url_pisoscom']]
-        start_urls_pisoscom = [url + 'fecharecientedesde-desc/' for url in start_urls_pisoscom]
-    except:
-        start_urls_pisoscom = ['https://www.pisos.com/']
-
-    try:
-        start_urls_fotocasa = [data['url_fotocasa']]
-    except:
-        start_urls_fotocasa = ['https://www.fotocasa.es/']
-
-    try:
-        start_urls_habitaclia = [data['url_habitaclia']]
-        start_urls_habitaclia = [url + '?ordenar=mas_recientes' for url in start_urls_habitaclia]
-    except:
-        start_urls_habitaclia = ['https://www.habitaclia.com/']
-
-    urls['start_urls_idealista'] = start_urls_idealista
-    urls['start_urls_pisoscom'] = start_urls_pisoscom
-    urls['start_urls_fotocasa'] = start_urls_fotocasa
-    urls['start_urls_habitaclia'] = start_urls_habitaclia
-
-    return urls
+        with open('./data/config.json') as json_file:
+            global data
+            data = json.load(json_file)
 
 def check_config(db_client, db_name):
     # creem l'objecte per enviar tg
@@ -242,10 +165,6 @@ def check_config(db_client, db_name):
         # Si ha funcionat enviem dades
         logger.info(f"TELEGRAM {info_message.chat.title} CHANNEL VERIFIED")
 
-        # Si no s'ha enviat el missatge de telegram
-        #except:
-        #    pass
-
         # enviem dades
         db_module.insert_host_mongodb(db_client, db_name, data_host, logger)
 
@@ -255,7 +174,99 @@ def check_config(db_client, db_name):
 
     return info_message
 
-def scrap_realestate(telegram_msg):
+def checks():
+    # Mirem si existeix el directori data i logs, sinó el creem.
+    if not os.path.exists('data'):
+        os.makedirs('data')
+    # Mirem el time update
+    if int(data['time_update']) < 300:
+        logger.error("TIME UPDATE < 300")
+        sys.exit()
+    time.sleep(0.05)
+    db_client = db_module.check_bbdd_mongodb(config_db_mongodb, logger)  # comprovem la connexió amb la bbdd
+    info_message = check_config(db_client, config_db_mongodb['db_name'])  # Comprovem parametres configuració
+    return db_client, info_message
+
+def check_url(url):
+    try:
+        url_code = urllib.request.urlopen(url).getcode()
+    except:
+        url_code = 404
+
+    return url_code
+
+def init_app_flask():
+    # comprovem si el servidor està engengat.
+    # si no trobem cap pàgina a localhost:8080 executem el servidor
+    localhost_code = check_url("http://localhost:8080")
+    if localhost_code != 200:
+        try:
+            #os.system('python ./scrapyrealestate/flask_server.py &')
+            proces_server = subprocess.Popen('python ./scrapyrealestate/flask_server.py &', shell=True)
+        except:
+            #os.system('python3 ./scrapyrealestate/flask_server.py &')
+            proces_server = subprocess.Popen('python3 ./scrapyrealestate/flask_server.py &', shell=True)
+        #proces_server.wait()
+        pid = proces_server.pid
+        real_pid = pid + 1 # +1 perque el pid real sempre es un numero mes
+        #proces_server.terminate()
+    else:
+        real_pid = os.popen('pgrep python ./scrapyrealestate/flask_server.py').read()
+
+    return real_pid
+
+def get_config_flask(pid):
+    while True:
+        try:
+            # si trobem info a localhost:8080/data guardem les dades i sortim del bucle
+            with open('./data/config.json') as json_file:
+                global data
+                data = json.load(json_file)
+                os.system(f'kill {pid}')  # matem el proces del servidor web
+                break
+        except:
+            pass
+        time.sleep(1)
+
+def get_urls():
+    urls = {}
+
+    # sino hi ha urls, sortim
+    if data['url_idealista'] == '' and data['url_pisoscom'] == '' and data['url_fotocasa'] == '' and data['url_habitaclia'] == '':
+        logger.warning("NO URLS ENTERED (MINIUM 1 URL)")
+        sys.exit()
+
+    try:
+        start_urls_idealista = [data['url_idealista']]
+        start_urls_idealista = [url + '?ordenado-por=fecha-publicacion-desc' for url in start_urls_idealista]
+    except:
+        start_urls_idealista = ['https://www.idealista.com/']
+
+    try:
+        start_urls_pisoscom = [data['url_pisoscom']]
+        start_urls_pisoscom = [url + 'fecharecientedesde-desc/' for url in start_urls_pisoscom]
+    except:
+        start_urls_pisoscom = ['https://www.pisos.com/']
+
+    try:
+        start_urls_fotocasa = [data['url_fotocasa']]
+    except:
+        start_urls_fotocasa = ['https://www.fotocasa.es/']
+
+    try:
+        start_urls_habitaclia = [data['url_habitaclia']]
+        start_urls_habitaclia = [url + '?ordenar=mas_recientes' for url in start_urls_habitaclia]
+    except:
+        start_urls_habitaclia = ['https://www.habitaclia.com/']
+
+    urls['start_urls_idealista'] = start_urls_idealista
+    urls['start_urls_pisoscom'] = start_urls_pisoscom
+    urls['start_urls_fotocasa'] = start_urls_fotocasa
+    urls['start_urls_habitaclia'] = start_urls_habitaclia
+
+    return urls
+
+def scrap_realestate(db_client, db_name, telegram_msg):
     start_time = time.time()
 
     # Si el nom del projecte te alguna "-" les canviem ja que dona problemes amb el sqlite
@@ -325,8 +336,7 @@ def scrap_realestate(telegram_msg):
         file.write(filedata)
 
     # Creem la sessió de la bbdd amb les dades
-    db_engine, session, Base = db_module.create_engine_sqlite_db('sqlite',
-                                                                 scrapy_rs_name,
+    db_engine, session, Base = db_module.create_engine_sqlite_db(scrapy_rs_name,
                                                                  'data',
                                                                  'realestates.sqlite',
                                                                  logger)
@@ -339,6 +349,8 @@ def scrap_realestate(telegram_msg):
                                 Base,
                                 data['max_price'],
                                 data['telegram_chatuserID'],
+                                db_client,
+                                db_name,
                                 telegram_msg,
                                 logger)
 
@@ -348,59 +360,35 @@ def init():
     print(f'scrapyrealestate v{__version__}')
     tprint("scrapy realestate")
     print(f'scrapyrealestate v{__version__}')
-    time.sleep(1)
-    check_directories()  # Comprovem directoris
     time.sleep(0.05)
-    # Sino existeix el fitxer de configuració agafem les dades de la web
-    if not os.path.isfile('./data/config.json'):
-        pid = init_app_flask()  # iniciem  flask a localhost:8080
-        get_config_flask(pid)   # agafem les dades de la configuració
-    else:
-        with open('./data/config.json') as json_file:
-            global data
-            data = json.load(json_file)
-
-    logger = init_logs() # iniciem els logs
+    logger = init_logs()  # iniciem els logs
     time.sleep(0.05)
-    # Mirem el time update
-    if int(data['time_update']) < 300:
-        logger.error("TIME UPDATE < 300")
-        sys.exit()
-
+    get_config()    # Agafem la configuració
     time.sleep(0.05)
-    db_client = db_module.check_bbdd_mongodb(config_db_mongodb, logger)   # comprovem la connexió amb la bbdd
+    db_client, info_message = checks()    # Comprovacions
     time.sleep(0.05)
-    info_message = check_config(db_client, config_db_mongodb['db_name'])  # Comprovem el fitxer
-    time.sleep(0.05)
-    # Executem funcio
-
     count = 0
     telegram_msg = False
-    # logger.debug(f'SCRAPING FLATS (LOOP {count})')
-    # noinit = False
     scrapy_rs_name = data['scrapy_rs_name'].replace("-", "_")
+    send_first = data['send_first']
 
     while True:
-        try:
-            os.remove(f"./data/{scrapy_rs_name}.json")  # Eliminem l'arxiu json
+        try:    os.remove(f"./data/{scrapy_rs_name}.json")  # Eliminem l'arxiu json
         except:
             pass
 
-        #logger.debug('DEBUGGING ENABLED')
-        time.sleep(0.05)
-        start_time = time.time()
-        # Quan ja haguem passat al segon cicle, canviem telegram_msg a true per enviar els missatges
-        if count > 0:
+        # Si senf_first està activat o bé hem passat al segon cicle, canviem telegram_msg a true per enviar els missatges
+        if send_first == 'True' or count > 0:
             telegram_msg = True
             logger.debug('TELEGRAM MSG ENABLED')
-        # Fem scraping a aquesta zona
-        try:
-            scrap_realestate(telegram_msg)
-        except:
-            pass
+
+        #try:
+        # Cridem la funció d'scraping
+        scrap_realestate(db_client, config_db_mongodb['db_name'], telegram_msg)
+        #except:
+        #    pass
 
         count += 1  # Sumem 1 cicle
-        end_time = time.time()
         logger.debug(f"SLEEPING {data['time_update']} SECONDS")
         time.sleep(int(data['time_update']))
 
