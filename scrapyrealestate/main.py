@@ -325,7 +325,6 @@ def scrap_realestate(db_client, db_name, telegram_msg):
         logger.debug(f"CRAWLED {portal_name.upper()}")
 
     # Arreglar JSON - S'han d'unir les diferents parts - o treure les parts que els uneixen (][)
-    #os.chdir("..") # tornem al directori pare
     logger.debug(f"EDITING ./data/{scrapy_rs_name}.json...")
     with open(f'./data/{scrapy_rs_name}.json', 'r') as file:
         filedata = file.read()
