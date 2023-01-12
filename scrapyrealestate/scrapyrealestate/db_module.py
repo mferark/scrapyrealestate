@@ -23,6 +23,7 @@ def insert_host_mongodb(db_client, db_name, data_host, logger):
                           "chat_id": data_host['chat_id'],
                           "group_name": data_host['gtname'],
                           "time_refresh": data_host['refresh'],
+                          "min_price": data_host['min_price'],
                           "max_price": data_host['max_price'],
                           "urls": data_host['urls'],
                           "so": data_host['so'],

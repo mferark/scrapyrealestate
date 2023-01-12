@@ -150,7 +150,7 @@ def json_to_bbdd(json_file_name, scrapy_rs_name, db_engine, session, Base, min_p
             db_module.insert_flat_mongodb(db_client, 'scrapyrealestate', data_flat, logger)
 
             # Si el preu es <= max_price
-            if int(max_price) >= int(price) >= int(min_price) or int(max_price) == 0:
+            if int(max_price) >= int(price) >= int(min_price) or int(max_price) == 0 and int(price) >= int(min_price):
                 # Creem objecte flat (tambe a la bbdd)
                 flat = Flat(flat_id, title, price, rooms, m2, floor, href, datetime.datetime.now())
                 session.add(flat)

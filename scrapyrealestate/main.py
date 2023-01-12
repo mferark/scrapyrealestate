@@ -144,6 +144,7 @@ def check_config(db_client, db_name):
                                                                     f"<code>scrapyrealestate v{__version__}\n</code>"
                                                                     f"\n"
                                                                     f"<code>REFRESH     <b>{data['time_update']}</b>s</code>\n"
+                                                                    f"<code>MIN PRICE   <b>{data['min_price']}€</b></code>\n"
                                                                     f"<code>MAX PRICE   <b>{data['max_price']}€</b> (0 = NO LIMIT)</code>\n"
                                                                     f"<code>URLS        <b>{urls_ok_count}</b>  →   </code>{urls_ok}\n",
                                            parse_mode='HTML'
@@ -159,6 +160,7 @@ def check_config(db_client, db_name):
             'chat_id': info_message.chat.id,
             'gtname': info_message.chat.title,
             'refresh': data['time_update'],
+            'min_price': data['min_price'],
             'max_price': data['max_price'],
             'urls': db_urls,
             'host_name': platform.node(),
