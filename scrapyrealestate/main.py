@@ -358,7 +358,7 @@ def init():
     print('LOADING...')
     time.sleep(1)
     print(f'scrapyrealestate v{__version__}')
-    tprint("scrapy realestate")
+    tprint("scrapyrealestate")
     print(f'scrapyrealestate v{__version__}')
     time.sleep(0.05)
     logger = init_logs()  # iniciem els logs
