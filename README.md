@@ -85,8 +85,8 @@ http://localhost:8080/
   - **telegram_chatuserID** El valor se obtiene de un canal de Telegram. Tenemos que crear previamente uno, si no lo tenemos ya, y obtener el chat id (ver más abajo).
   - **max_price** Precio a mostrar máximo. Sí no queremos límite usamos 0.
   - **urls** Introducir las URL de idealista, pisos.com, fotocasa y habitaclia. En el caso de fotocasa necesita tener ordenación de las viviendas más recientes. Recomendado para ciudades pequeñas, barrios medianos y pueblos, ya que solo coge las 2 primeras viviendas de la página. Actualmente no es muy funcional.
-  - **send_first** Esta opción se activa cuando se quieren recibir las viviendas que hay antes de iniciar el script. Si está desactivada se recibirán solo las nuevas.
   - **proxy_idealista** Por seguridad y evitar que baneen nuestra IP, es recomendable su uso. Aún así al ser proxys gratuitos en ocasiones no son muy eficientes.
+  - **send_first** Esta opción se activa cuando se quieren recibir las viviendas que hay antes de iniciar el script. Si está desactivada se recibirán solo las nuevas.
 
 
 - También podemos modificar el archivo **config.json** dentro de la carpeta data. Siempre que exista no serà necesario introducir los datos via URL.
