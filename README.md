@@ -89,6 +89,7 @@ El puerto 8080 puede varias si usamos más instancias.
   - **log_level_scrapy** Nivel de log mínimos que muestra python scrapy. Por defecto WARNING.
   - **scrapy_time_update** Tiempo entre cada búsqueda (mínimo 300, en segundos).
   - **telegram_chatuserID** El valor se obtiene de un canal de Telegram. Tenemos que crear previamente uno, si no lo tenemos ya, y obtener el chat id (ver más abajo).
+  - **min_price** Precio a mostrar minimo.
   - **max_price** Precio a mostrar máximo. Sí no queremos límite usamos 0.
   - **urls** Introducir las URL de idealista, pisos.com, fotocasa y habitaclia. En el caso de fotocasa necesita tener ordenación de las viviendas más recientes. Recomendado para ciudades pequeñas, barrios medianos y pueblos, ya que solo coge las 2 primeras viviendas de la página. Actualmente no es muy funcional.
   - **proxy_idealista** Por seguridad y evitar que baneen nuestra IP, es recomendable su uso. Aún así al ser proxys gratuitos en ocasiones no son muy eficientes.
