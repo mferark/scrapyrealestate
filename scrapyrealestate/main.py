@@ -10,7 +10,7 @@ import urllib.request, json
 __author__ = "mferark"
 __author__ = "mferarg@gmail.com"
 __license__ = "GPL"
-__version__ = "2.0.2"
+__version__ = "2.0.3"
 
 # Parameters
 config_db_mongodb = {
