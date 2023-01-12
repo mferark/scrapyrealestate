@@ -42,7 +42,7 @@ def make_flat(tablename, Base):
 
     return Flat
 
-def json_to_bbdd(json_file_name, scrapy_rs_name, db_engine, session, Base, max_price, tg_chatID, db_client, db_name, telegram_msg, logger):
+def json_to_bbdd(json_file_name, scrapy_rs_name, db_engine, session, Base, min_price, max_price, tg_chatID, db_client, db_name, telegram_msg, logger):
     '''
     Funció que llegeix un json dels habitatges amb les seves propietats.
     Compara si n'hi ha cap que no estigui a la bbdd i notifica amb missatge.
@@ -150,7 +150,7 @@ def json_to_bbdd(json_file_name, scrapy_rs_name, db_engine, session, Base, max_p
             db_module.insert_flat_mongodb(db_client, 'scrapyrealestate', data_flat, logger)
 
             # Si el preu es <= max_price
-            if int(price) <= int(max_price) or int(max_price) == 0:
+            if int(max_price) >= int(price) >= int(min_price) or int(max_price) == 0:
                 # Creem objecte flat (tambe a la bbdd)
                 flat = Flat(flat_id, title, price, rooms, m2, floor, href, datetime.datetime.now())
                 session.add(flat)

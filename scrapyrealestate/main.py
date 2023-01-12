@@ -347,6 +347,7 @@ def scrap_realestate(db_client, db_name, telegram_msg):
                                 db_engine,
                                 session,
                                 Base,
+                                data['min_price'],
                                 data['max_price'],
                                 data['telegram_chatuserID'],
                                 db_client,

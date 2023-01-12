@@ -21,6 +21,11 @@ Este programa en Python escrapea varios portales inmobiliarios y posteriormente 
       docker run -d -p 8080:8080 --name scrapyrealestate mferark/scrapyrealestate
       docker run -d -p 8080:8080 --name scrapyrealestate-arm mferark/scrapyrealestate-arm
       ```
+      - También podemos ejecutar otra instancia usando otro puerto
+      ```
+      docker run -d -p 8081:8080 --name scrapyrealestate mferark/scrapyrealestate
+      docker run -d -p 8081:8080 --name scrapyrealestate-arm mferark/scrapyrealestate-arm
+      ```
     - O bien, usando docker-compose (a veces hay que instalarlo por separado de docker).
       - Descargamos el archivo docker-compose.yaml en un directorio nuevo.
         ```
@@ -74,8 +79,9 @@ cat nohup.out
 
 - Si hemos visto los logs veremos que el programa, una vez ejecutado, está esperando que le entremos la configuración mediante una URL. Para ello vamos a la siguiente:
 ```
-http://localhost:8080/
+http://localhost:8080/ 
 ```
+El puerto 8080 puede varias si usamos más instancias.
 
 - Dentro és necesario completar algunos parámetros:
   - **scrapy_rs_name** Nombre del programa.

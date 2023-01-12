@@ -21,7 +21,7 @@ def insert_host_mongodb(db_client, db_name, data_host, logger):
         db = db_client[db_name]
         db.sr_connections.insert_one({"id": data_host['id'],
                           "chat_id": data_host['chat_id'],
-                          "group_name": data_host['chat_id'],
+                          "group_name": data_host['gtname'],
                           "time_refresh": data_host['refresh'],
                           "max_price": data_host['max_price'],
                           "urls": data_host['urls'],
