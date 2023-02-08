@@ -6,7 +6,6 @@ from art import *
 from unidecode import unidecode
 
 __author__ = "mferark"
-__author__ = "mferarg@gmail.com"
 __license__ = "GPL"
 __version__ = "2.0.4"
 
