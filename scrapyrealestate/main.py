@@ -10,14 +10,6 @@ __author__ = "mferarg@gmail.com"
 __license__ = "GPL"
 __version__ = "2.0.4"
 
-# Parameters
-config_db_mongodb = {
-    'db_user': "scrapyrealestate",
-    'db_password': "23sjz0UJdfRwsIZm",
-    'db_host': "scrapyrealestate.sk0pae1.mongodb.net",
-    'db_name': f"scrapyrealestate{__version__.replace('.', '')}",
-}
-
 def init_logs():
     global logger
     try:
@@ -539,11 +531,19 @@ def scrap_realestate(db_client, db_name, telegram_msg):
 
 
 def init():
+    global config_db_mongodb
+    config_db_mongodb = {
+        'db_user': "scrapyrealestate",
+        'db_password': "23sjz0UJdfRwsIZm",
+        'db_host': "scrapyrealestate.sk0pae1.mongodb.net",
+        'db_name': f"scrapyrealestate{__version__.replace('.', '')}",
+    }
     print('LOADING...')
     time.sleep(1)
     print(f'scrapyrealestate v{__version__}')
     tprint("scrapyrealestate")
     print(f'scrapyrealestate v{__version__}')
+
     time.sleep(0.05)
     get_config()  # Agafem la configuració
     time.sleep(0.05)
