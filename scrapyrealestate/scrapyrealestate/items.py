@@ -5,14 +5,19 @@
 
 import scrapy
 
-
 class ScrapyrealestateItem(scrapy.Item):
     # define the fields for your item here like:
     id = scrapy.Field()
-    title = scrapy.Field()
     price = scrapy.Field()
-    rooms = scrapy.Field()
     m2 = scrapy.Field()
+    rooms = scrapy.Field()
     floor = scrapy.Field()
-    post_time = scrapy.Field()
+    town = scrapy.Field()
+    neighbour = scrapy.Field()
+    street = scrapy.Field()
+    number = scrapy.Field()
+    type = scrapy.Field()
+    title = scrapy.Field()
     href = scrapy.Field()
+    site = scrapy.Field()
+    post_time = scrapy.Field()

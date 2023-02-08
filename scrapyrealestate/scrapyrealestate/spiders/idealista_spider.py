@@ -31,8 +31,8 @@ class IdealistaSpider(CrawlSpider):
             'sec-fetch-user': '?1',
             'sec-gpc': '1',
             'upgrade-insecure-requests': '1',
-            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36'
-            #'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36'
+            #'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36'
+            'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36'
 
     }
     }
@@ -62,12 +62,94 @@ class IdealistaSpider(CrawlSpider):
         # Agafem els div de tots els habitatges de la pàgina
         flats = soup.find_all("div", {"class": "item-info-container"})
 
+        # Obtenim si es de lloguer o compra a partir de la url
+        if self.start_urls.split('/')[3].split('-')[0] == 'alquiler':
+            type = 'rent'
+        elif self.start_urls.split('/')[3].split('-')[0] == 'venta':
+            type = 'buy'
+
         # Iterem per cada numero d'habitatge de la pàgina i agafem les dades
         for nflat in range(len(flats)):
             # Agafem href, title, price, details
             href = flats[nflat].find(class_="item-link")['href']
             title = flats[nflat].find(class_="item-link").text.strip()
+            #print(title)
+            # Intentem agafar ciutat, barri i carrer
+            # A idealista pot haver 4 tipus de titol, d'ob obtindrem aquestes dades
+            neighbour = ''
+            street = ''
+            number = ''
+            town = ''
+            # Piso en Passatge de I'Olivera, 12, La Maurina, Terrassa (4)
+            if len(title.split(',')) == 4:
+                town = title.split(',')[-1]
+                number = title.split(',')[1]
+                neighbour = title.split(',')[2]
+                street = title.split(',')[0].split(' en ')[-1]
+            # Piso en Passatge de I'Olivera, La Maurina, Terrassa (3)
+            elif len(title.split(',')) == 3:
+                town = title.split(',')[-1]
+                neighbour = title.split(',')[1]
+                street = title.split(',')[0].split(' en ')[-1]
+            # Ático en Centre, Terrassa (2)
+            elif len(title.split(',')) == 2:
+                town = title.split(',')[-1]
+                neighbour = title.split(',')[0].split(' en ')[-1]
+            else:
+                street = ''
+                neighbour = ''
+                if len(town) > 12:
+                    town = town.split(' en ')[-1]
+                if town[:1] == ' ':
+                    town = town[1:]
+            try:
+                if town[0] == ' ':
+                    town = town[1:]
+            except:
+                pass
+            try:
+                if neighbour[0] == ' ':
+                    neighbour = neighbour[1:]
+            except:
+                pass
+            try:
+                if number[0] == ' ':
+                    number = number[1:]
+            except:
+                pass
+
+            # busquem posibles noms de carrers
+            if len(street) > 0:
+                if 'calle' in street.lower():
+                    street = street
+                elif 'c.' in street.lower():
+                    street = street
+                elif 'avenida' in street.lower():
+                    street = street
+                elif 'av.' in street.lower():
+                    street = street
+                elif 'plaza' in street.lower():
+                    street = street.replace('plaza', 'plaça')
+                elif 'via' in street.lower():
+                    street = street
+                elif 'gran via' in street.lower():
+                    street = street
+                elif 'camino' in street.lower():
+                    street = street
+                elif 'paseo' in street.lower():
+                    street = street
+                elif 'passaje' in street.lower():
+                    street = street
+                elif 'carretera' in street.lower():
+                    street = street
+                elif 'ctra.' in street.lower():
+                    street = street
+                else:
+                    street = street
+
+            #print(f"MUNICIPI: {town}, STREET: {street}, BARRI: {neighbour}, NUMBER: {number}")
             price = flats[nflat].find("span", {"class": "item-price h2-simulated"}).text.strip()
+
             details = flats[nflat].find_all("span", {"class": "item-detail"})
             # Agafem id
             try:
@@ -105,16 +187,21 @@ class IdealistaSpider(CrawlSpider):
             else:
                 # Add items
                 items['id'] = id
-                items['title'] = title
                 items['price'] = price
-                items['rooms'] = rooms
                 items['m2'] = m2
+                items['rooms'] = rooms
                 try:
-                    items['floor'] = floor    # sino peta llocs sense pisos (pe. cerdanya francesa)
+                    items['floor'] = floor  # sino peta llocs sense pisos (pe. cerdanya francesa)
                 except:
                     items['floor'] = ''
-
+                items['town'] = town
+                items['neighbour'] = neighbour
+                items['street'] = street
+                items['number'] = number
+                items['type'] = type
+                items['title'] = title
                 items['href'] = default_url + href
+                items['site'] = 'idealista'
                 ids.append(id)
 
                 yield items

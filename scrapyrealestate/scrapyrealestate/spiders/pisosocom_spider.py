@@ -1,4 +1,4 @@
-import scrapy, os, logging, time
+import scrapy, os, logging, time, re
 from scrapyrealestate.proxies import *
 from scrapy.spiders import CrawlSpider, Rule
 from scrapy.linkextractors import LinkExtractor
@@ -63,6 +63,12 @@ class PisoscomSpider(CrawlSpider):
         # div --> class="ad-preview__info"
         flats = soup.find_all("div", {"class": "ad-preview__info"})
 
+        # Obtenim si es de lloguer o compra a partir de la url
+        if self.start_urls.split('/')[3] == 'alquiler':
+            type = 'rent'
+        elif self.start_urls.split('/')[3] == 'venta':
+            type = 'buy'
+
         # Iterem per cada numero d'habitatge de la pàgina i agafem les dades
         for nflat in range(len(flats)):
             # Validem i agafem l'enllaç (ha de ser el link del habitatge)
@@ -71,6 +77,73 @@ class PisoscomSpider(CrawlSpider):
 
             href = flats[nflat].find(class_="ad-preview__title")['href']
             title = flats[nflat].find(class_="ad-preview__title").text.strip()
+            # Intentem obtenir municipi, carrer i barri
+            # Piso en Sant Pere Nord
+            # Sant Pere Nord (Distrito Sant Pere Nord-Ègara. Terrassa)
+            town = ''
+            neighbour = ''
+            street = ''
+            number = ''
+            if len(title.split(',')) == 2:
+                street_ = title.split(',')[0]
+                number = title.split(',')[-1]
+            elif len(title.split(',')) == 1:
+                street_ = flats[nflat].find(class_="ad-preview__title").text.strip().split(' en ')[-1]
+            # busquem posibles noms de carrers
+            if len(street_) > 0:
+                if 'calle' in street_.lower():
+                    street = street_
+                elif 'carrer' in street_.lower():
+                    street = street_
+                elif 'c.' in street_.lower():
+                    street = street_
+                elif 'avenida' in street_.lower():
+                    street = street_
+                elif 'avinguda' in street_.lower():
+                    street = street_
+                elif 'av.' in street_.lower():
+                    street = street_
+                elif 'plaza' in street_.lower():
+                    street = street_
+                elif 'plaça' in street_.lower():
+                    street = street_
+                elif 'via' in street_.lower():
+                    street = street_
+                elif 'gran via' in street_.lower():
+                    street = street_
+                elif 'travessera' in street_.lower():
+                    street = street_
+                elif 'camino' in street_.lower():
+                    street = street_
+                elif 'cami' in street_.lower():
+                    street = street_
+                elif 'paseo' in street_.lower():
+                    street = street_
+                elif 'passeig' in street_.lower():
+                    street = street_
+                elif 'passaje' in street_.lower():
+                    street = street_
+                elif 'passatge' in street_.lower():
+                    street = street_
+                elif 'carretera' in street_.lower():
+                    street = street_
+                elif 'ctra.' in street_.lower():
+                    street = street_
+                else:
+                    pass
+
+            town_ = flats[nflat].find(class_="p-sm").text.strip()
+            if '(' in town_:
+                neighbour = town_.split('(')[0][:-1]
+                town = town_[town_.find('(') + 1:town_.find(')')]
+                if 'Distrito' in town:
+                    if '.' in town:
+                        town = town.split('.')[-1].split(' ')[1]
+                    elif 'Capital' in town:
+                        town = town.replace('Capital', '').replace(' ', '')
+
+            #print(f"MUNICIPI: {town}, STREET: {street}, BARRI: {neighbour}, NUMBER: {number}")
+
             try:
                 id = href.split('-')[2].split('_')[0]
                 # Si la id ja era a la llista, sortim
@@ -88,6 +161,8 @@ class PisoscomSpider(CrawlSpider):
             # Hi ha pisos sense m2, data o planta. Per evitar problemes assignem variable buida si hi ha error.
             try:
                 m2 = flats[nflat].find_all("p", {"class": "ad-preview__char p-sm"})[2].text.strip()
+            except IndexError:
+                m2 = flats[nflat].find_all("p", {"class": "ad-preview__char p-sm"})[1].text.strip()
             except:
                 m2 = ""
             try:
@@ -101,12 +176,19 @@ class PisoscomSpider(CrawlSpider):
             else:
                 # Add items
                 items['id'] = id
-                items['title'] = title
-                items['price'] = price.replace(' ', '')
-                items['rooms'] = rooms
+                items['price'] = price
                 items['m2'] = m2
+                items['rooms'] = rooms
                 items['floor'] = floor
+                items['town'] = town
+                items['neighbour'] = neighbour
+                items['street'] = street
+                items['number'] = number
+                items['type'] = type
+                items['title'] = title
                 items['href'] = default_url + href
+                items['site'] = 'pisoscom'
+                ids.append(id)
 
                 yield items
 

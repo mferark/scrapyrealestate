@@ -111,12 +111,14 @@ class FotocasaSpider(CrawlSpider):
             # Add items
             items['id'] = id
             items['title'] = title
+            items['town'] = ''
             items['price'] = price
             items['rooms'] = rooms
             items['m2'] = m2
             items['floor'] = floor
             items['post_time'] = post_time
             items['href'] = default_url + href
+            items['site'] = 'fotocasa'
 
             yield items
 

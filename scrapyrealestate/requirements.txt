@@ -7,9 +7,8 @@ scrapy_useragents
 scrapy-rotating-proxies
 requests
 pyTelegramBotAPI
-sqlalchemy
 requests_html
 pymongo
-marshmallow-sqlalchemy
 wheel
 flask
+unidecode

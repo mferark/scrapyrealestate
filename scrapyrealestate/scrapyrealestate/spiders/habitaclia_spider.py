@@ -1,4 +1,4 @@
-import scrapy, os, logging, time
+import scrapy, os, logging, time, re
 from scrapy.spiders import CrawlSpider, Rule
 from scrapy.linkextractors import LinkExtractor
 from datetime import datetime
@@ -68,6 +68,8 @@ class HabitacliaSpider(CrawlSpider):
         # Passem la resposta a text amb BeautifulSoup
         soup = BeautifulSoup(response.text, 'lxml')
 
+        flats = soup.find_all("div", {"class": "list-item"})
+
         # Agafem els div de tots els habitatges de la pàgina
         # <div class="item-info-container"><a aria-level="2" class="item-link" href="/inmueble/95416252/?xtmc=2_1_08030&amp;xtcr=0" role="heading" title="Piso en calle de Concepción Arenal, Sant Andreu, Barcelona">Piso en calle de Concepción Arenal, Sant Andreu, Barcelona</a><div class="price-row"><span class="item-price h2-simulated">800<span class="txt-big">€/mes</span></span></div><span class="item-detail">3 <small>hab.</small></span><span class="item-detail">60 <small>m²</small></span><span class="item-detail">Planta 3ª <small>exterior con ascensor</small></span><span class="item-detail"><small class="txt-highlight-red">5 horas</small></span><div class="item-description description"><p class="ellipsis">Piso con salón luminoso y habitación doble soleada. Dispone de tres habitaciones: una doble y dos individuales. Baño y cocina en perfecto...</p></div><div class="item-toolbar"><span class="icon-phone item-not-clickable-phone">935 437 953</span><a class="icon-phone phone-btn item-clickable-phone" href="tel:+34 935437953" target="_blank"><span>Llamar</span></a><button class="icon-chat email-btn action-email fake-anchor"><span>Contactar</span></button><button class="favorite-btn action-fav fake-anchor" data-role="add" data-text-add="Guardar" data-text-remove="Favorito" title="Guardar"><i class="icon-heart" role="image"></i><span>Guardar</span></button><button class="icon-delete trash-btn action-discard fake-anchor" data-role="add" data-text-remove="Descartar" rel="nofollow" title="Descartar"></button></div></div>
         # flats = response.css('div.item-info-container')
@@ -76,15 +78,89 @@ class HabitacliaSpider(CrawlSpider):
         #print(flats)
         #print(len(flats))
 
-        # div --> class="pagination" --> ul --> li --> class="next"
-        try:
-            next_page = soup.find("div", {"class": "pagination"}).find("a", {"class": "icon-arrow-right-after"})['href']
-        except:
-            next_page = ""
+        # Obtenim si es de lloguer o compra a partir de la url
+        if self.start_urls.split('/')[3].split('-')[0] == 'alquiler':
+            type = 'rent'
+        elif self.start_urls.split('/')[3].split('-')[0] == 'venta':
+            type = 'buy'
+        else:
+            type = ''
         # Iterem per cada numero d'habitatge de la pàgina i agafem les dades
         for nflat in range(len(flats)):
-            # Validem i agafem l'enllaç (ha de ser el link del habitatge)
-            # a --> class="item-link" --> href
+            try:
+                title = flats[nflat].find("h3", {"class": "list-item-title"}).find("a").text.strip()
+            except:
+                title = ''
+            # Intentem obtenir municipi, carrer i barri
+            # Alquiler Piso Carrer d'aribau. Magnífico piso en c.aribau ( consejo de ciento y diputación-barc
+            # Barcelona - Esquerra Baixa de l´Eixample
+            town = ''
+            neighbour = ''
+            street = ''
+            street_ = ''
+            number = ''
+            if len(title.split('.')) == 2:
+                street_ = title.split('.')[0].replace('Alquiler Piso  ', '').replace('Alquiler Tríplex ', '').replace('Alquiler Ático  ', '')
+            # busquem posibles noms de carrers
+            if len(street_) > 0:
+                if 'calle' in street_.lower():
+                    street = street_
+                elif 'carrer' in street_.lower():
+                    street = street_
+                elif 'c.' in street_.lower():
+                    street = street_
+                elif 'avenida' in street_.lower():
+                    street = street_
+                elif 'avinguda' in street_.lower():
+                    street = street_
+                elif 'av.' in street_.lower():
+                    street = street_
+                elif 'plaza' in street_.lower():
+                    street = street_
+                elif 'plaça' in street_.lower():
+                    street = street_
+                elif 'via' in street_.lower():
+                    street = street_
+                elif 'gran via' in street_.lower():
+                    street = street_
+                elif 'travessera' in street_.lower():
+                    street = street_
+                elif 'camino' in street_.lower():
+                    street = street_
+                elif 'cami' in street_.lower():
+                    street = street_
+                elif 'paseo' in street_.lower():
+                    street = street_
+                elif 'passeig' in street_.lower():
+                    street = street_
+                elif 'passaje' in street_.lower():
+                    street = street_
+                elif 'passatge' in street_.lower():
+                    street = street_
+                elif 'carretera' in street_.lower():
+                    street = street_
+                elif 'ctra.' in street_.lower():
+                    street = street_
+                else:
+                    street = street_
+            #try:
+            town_ = flats[nflat].find("p", {"class": "list-item-location"}).find("span").text.strip()
+            if ' - ' in town_:
+                if len(town_.split(' - ')) == 2:
+                    town = town_.split(' - ')[0]
+                    neighbour = town_.split(' - ')[-1]
+                elif len(town_.split(' - ')) == 3:
+                    town = town_.split(' - ')[0]
+                    neighbour = town_.split(' - ')[-1]
+            try:
+                number = re.findall(r'\d+', street)[0]
+            except:
+                pass
+
+            #print(f"MUNICIPI: {town}, STREET: {street.replace('en  ', '')}, BARRI: {neighbour}, NUMBER: {number}")
+
+            #except:
+            #    town = ''
             try:
                 over_flat = flats[nflat].find("span", {"class": "ady-relationship"}).text.strip()
             except:
@@ -95,11 +171,6 @@ class HabitacliaSpider(CrawlSpider):
                 break
 
             href = flats[nflat].find("h3", {"class": "list-item-title"}).find("a", href=True)['href']
-
-            try:
-                title = flats[nflat].find("h3", {"class": "list-item-title"}).find("a").text.strip()
-            except:
-                title = ''
 
             # span --> class="item-price h2-simulated" --> span .text
             try:
@@ -132,13 +203,19 @@ class HabitacliaSpider(CrawlSpider):
 
             # Add items
             items['id'] = id
-            items['title'] = title
-            items['price'] = price.replace(' ', '')+'/mes'
-            items['rooms'] = rooms
+            items['price'] = price.replace(' ', '') + '/mes'
             items['m2'] = m2
+            items['rooms'] = rooms
             items['floor'] = floor
-            items['post_time'] = post_time
+            items['town'] = town
+            items['neighbour'] = neighbour
+            items['street'] = street
+            items['number'] = number
+            items['type'] = type
+            #items['post_time'] = post_time
+            items['title'] = title
             items['href'] = href
+            items['site'] = 'habitaclia'
 
             yield items
 

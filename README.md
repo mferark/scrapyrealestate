@@ -16,15 +16,15 @@ Este programa en Python escrapea varios portales inmobiliarios y posteriormente 
   - Ahora tenemos dos opciones (los comandos repetidos son para dispositivos arm -raspberry o similar de 64bits-):
     - Descargamos la imagen y la ejecutamos manualmente.
       ```
-      docker pull mferark/scrapyrealestate
-      docker pull mferark/scrapyrealestate-arm
-      docker run -d -p 8080:8080 --name scrapyrealestate mferark/scrapyrealestate
-      docker run -d -p 8080:8080 --name scrapyrealestate-arm mferark/scrapyrealestate-arm
+      docker pull mferark/scrapyrealestate:latest
+      docker pull mferark/scrapyrealestate:arm-latest
+      docker run -d -p 8080:8080 --name scrapyrealestate --restart=always mferark/scrapyrealestate:latest
+      docker run -d -p 8080:8080 --name scrapyrealestate-arm --restart=always mferark/scrapyrealestate:arm-latest
       ```
       - También podemos ejecutar otra instancia usando otro puerto
       ```
-      docker run -d -p 8081:8080 --name scrapyrealestate mferark/scrapyrealestate
-      docker run -d -p 8081:8080 --name scrapyrealestate-arm mferark/scrapyrealestate-arm
+      docker run -d -p 8081:8080 --name scrapyrealestate mferark/scrapyrealestate:latest
+      docker run -d -p 8081:8080 --name scrapyrealestate-arm mferark/scrapyrealestate:arm-latest
       ```
     - O bien, usando docker-compose (a veces hay que instalarlo por separado de docker).
       - Descargamos el archivo docker-compose.yaml en un directorio nuevo.
@@ -89,6 +89,7 @@ El puerto 8080 puede varias si usamos más instancias.
   - **log_level_scrapy** Nivel de log mínimos que muestra python scrapy. Por defecto WARNING.
   - **scrapy_time_update** Tiempo entre cada búsqueda (mínimo 300, en segundos).
   - **telegram_chatuserID** El valor se obtiene de un canal de Telegram. Tenemos que crear previamente uno, si no lo tenemos ya, y obtener el chat id (ver más abajo).
+  - **start_msg** Envia un mensaje de inicio al grupo de telegram.
   - **min_price** Precio a mostrar minimo.
   - **max_price** Precio a mostrar máximo. Sí no queremos límite usamos 0.
   - **urls** Introducir las URL de idealista, pisos.com, fotocasa y habitaclia. En el caso de fotocasa necesita tener ordenación de las viviendas más recientes. Recomendado para ciudades pequeñas, barrios medianos y pueblos, ya que solo coge las 2 primeras viviendas de la página. Actualmente no es muy funcional.
