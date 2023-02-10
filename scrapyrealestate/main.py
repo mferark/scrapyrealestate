@@ -71,10 +71,11 @@ def get_config():
        # pid = init_app_flask()  # iniciem  flask a localhost:8080
       #  get_config_flask(pid)  # agafem les dades de la configuració
     #else:
+        #os.chdir('../scrapyrealestate/scrapyrealestate')
+        #print(os.getcwd())
         with open('./data/config.json') as json_file:
             global data
             data = json.load(json_file)
-
 
 def check_config(db_client, db_name):
     # creem l'objecte per enviar tg
@@ -97,15 +98,15 @@ def check_config(db_client, db_name):
         for url in urls[portal]:
             # Mirem si hi ha mes d'una url per portal
             # Si tenim mes de x urls, sortim
-            if len(urls[portal]) > 1:
-                logger.error(f"MAXIM URLS PORTAL (1) YOU HAVE ({len(urls[portal])}) IN {url.split('/')[2]}")
-                info_message = tb.send_message(data['telegram_chatuserID'], f"<code>LOADING...</code>\n"
-                                                                            f"\n"
-                                                                            f"<code>scrapyrealestate v{__version__}\n</code>"
-                                                                            f"\n"
-                                                                            f"<code>MAXIM URLS PORTAL (1) YOU HAVE ({len(urls[portal])}) IN {url.split('/')[2]}</code>\n",
-                                               parse_mode='HTML')
-                sys.exit()
+            # if len(urls[portal]) > 1:
+            #     logger.error(f"MAXIM URLS PORTAL (1) YOU HAVE ({len(urls[portal])}) IN {url.split('/')[2]}")
+            #     info_message = tb.send_message(data['telegram_chatuserID'], f"<code>LOADING...</code>\n"
+            #                                                                 f"\n"
+            #                                                                 f"<code>scrapyrealestate v{__version__}\n</code>"
+            #                                                                 f"\n"
+            #                                                                 f"<code>MAXIM URLS PORTAL (1) YOU HAVE ({len(urls[portal])}) IN {url.split('/')[2]}</code>\n",
+            #                                    parse_mode='HTML')
+            #     sys.exit()
             # Si te mes de 3 parts es que es url llarga i la guardem a la llista de ok
             if len(url.split('/')) > 2:
                 portal_url = url.split('/')[2]
@@ -249,7 +250,7 @@ def get_urls():
         sys.exit()
 
     try:
-        start_urls_idealista = [data['url_idealista']]
+        start_urls_idealista = data['url_idealista']
         start_urls_idealista = [url + '?ordenado-por=fecha-publicacion-desc' for url in start_urls_idealista]
     except:
         start_urls_idealista = ['https://www.idealista.com/']
@@ -270,7 +271,7 @@ def get_urls():
         start_urls_habitaclia = [url + '?ordenar=mas_recientes' for url in start_urls_habitaclia]
     except:
         start_urls_habitaclia = ['https://www.habitaclia.com/']
-
+    print(start_urls_idealista)
     urls['start_urls_idealista'] = start_urls_idealista
     urls['start_urls_pisoscom'] = start_urls_pisoscom
     urls['start_urls_fotocasa'] = start_urls_fotocasa
@@ -454,10 +455,15 @@ def scrap_realestate(db_client, db_name, telegram_msg):
     proxy_idealista = data['proxy_idealista']
 
     urls = []
-    urls.append(data['url_idealista'])
-    urls.append(data['url_pisoscom'])
-    urls.append(data['url_fotocasa'])
-    urls.append(data['url_habitaclia'])
+    # urls.append(data['url_idealista'])
+    # urls.append(data['url_pisoscom'])
+    # urls.append(data['url_fotocasa'])
+    # urls.append(data['url_habitaclia'])
+    for key in data:
+        if "url" in key and isinstance(data[key], list):
+            urls += data[key]
+        elif "url" in key:
+            urls.append(data[key])
 
     # iterem les urls que hi ha i fem scrape
     for url in urls:
@@ -465,6 +471,10 @@ def scrap_realestate(db_client, db_name, telegram_msg):
         # try:
         if url == '':
             continue
+        if isinstance(url, list):
+            for url_unica in url:
+                url = url_unica
+
         portal_url = url.split('/')[2]
         portal_name = portal_url.split('.')[1]
         try:
