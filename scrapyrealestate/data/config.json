@@ -9,7 +9,8 @@
     "max_price": "300000",
     "url_idealista": [
       "https://www.idealista.com/venta-viviendas/mostoles-madrid/",
-      "https://www.idealista.com/venta-viviendas/las-rozas-de-madrid-madrid/"
+      "https://www.idealista.com/venta-viviendas/las-rozas-de-madrid-madrid/",
+      "https://www.idealista.com/venta-viviendas/leganes-madrid/"
     ],
     "proxy_idealista": "off",
     "url_pisoscom": "",
