@@ -1,0 +1,19 @@
+{
+    "scrapy_rs_name": "pichollo",
+    "log_level": "info",
+    "log_level_scrapy": "warning",
+    "time_update": "300",
+    "telegram_chatuserID": "-1001733894075",
+    "start_msg": "True",
+    "min_price": "0",
+    "max_price": "300000",
+    "url_idealista": [
+      "https://www.idealista.com/venta-viviendas/mostoles-madrid/",
+      "https://www.idealista.com/venta-viviendas/las-rozas-de-madrid-madrid/"
+    ],
+    "proxy_idealista": "off",
+    "url_pisoscom": "",
+    "url_fotocasa": "",
+    "url_habitaclia": "",
+    "send_first": "True"
+}
