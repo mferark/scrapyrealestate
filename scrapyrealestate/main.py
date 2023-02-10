@@ -64,13 +64,13 @@ def del_json_flats(dir):
 
 def get_config():
     # Sino existeix el fitxer de configuració agafem les dades de la web
-    if not os.path.isfile('./data/config.json'):
+    #if not os.path.isfile('./data/config.json'):
         # Mirem si existeix el directori data i logs, sinó el creem.
-        if not os.path.exists('data'):
-            os.makedirs('data')
-        pid = init_app_flask()  # iniciem  flask a localhost:8080
-        get_config_flask(pid)  # agafem les dades de la configuració
-    else:
+     #   if not os.path.exists('data'):
+      #      os.makedirs('data')
+       # pid = init_app_flask()  # iniciem  flask a localhost:8080
+      #  get_config_flask(pid)  # agafem les dades de la configuració
+    #else:
         with open('./data/config.json') as json_file:
             global data
             data = json.load(json_file)
