@@ -471,9 +471,9 @@ def scrap_realestate(db_client, db_name, telegram_msg):
         # try:
         if url == '':
             continue
-        if isinstance(url, list):
-            for url_unica in url:
-                url = url_unica
+        # if isinstance(url, list):
+        #     for url_unica in url:
+        #         url = url_unica
 
         portal_url = url.split('/')[2]
         portal_name = portal_url.split('.')[1]
