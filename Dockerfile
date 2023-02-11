@@ -18,6 +18,8 @@ WORKDIR /scrapyrealestate/scrapyrealestate/
 RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY scrapyrealestate/data/config.json /scrapyrealestate/scrapyrealestate/data
+#COPY scrapyrealestate/data/config.json /scrapyrealestate/scrapyrealestate/data
+
+EXPOSE 8080
 
 CMD ["python", "./main.py"]
