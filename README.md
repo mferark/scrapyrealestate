@@ -1,3 +1,4 @@
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/L4L5ICU6C)
 # Scrapyrealestate
 
 Este programa en Python escrapea varios portales inmobiliarios y posteriormente envía las nuevas viviendas detectadas a un grupo de Telegram configurado por el usuario.
