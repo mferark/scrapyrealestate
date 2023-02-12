@@ -1,4 +1,0 @@
-exclude:
-- file: main.py
-  secrets:
-  - 5042109408:AAHBrCsNiuI3lXBEiLjmyxqXapX4h1LHbJs
