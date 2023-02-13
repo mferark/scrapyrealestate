@@ -1,5 +1,0 @@
-version: 2
-secret:
-  ignored-matches:
-    - name:
-      match: 5042109408:AAHBrCsNiuI3lXBEiLjmyxqXapX4h1LHbJs
