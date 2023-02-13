@@ -110,4 +110,3 @@ El puerto 8080 puede varias si usamos más instancias.
 ### Grupos generales creados
 Aquí pondre grupos de telegram públicos existentes:
 - BARCELONA: https://t.me/alertapisosbcn (alquiler)
-- 
