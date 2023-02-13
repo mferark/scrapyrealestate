@@ -7,7 +7,7 @@ from unidecode import unidecode
 
 __author__ = "mferark"
 __license__ = "GPL"
-__version__ = "2.0.4"
+__version__ = "2.0.5"
 
 def init_logs():
     global logger
@@ -384,9 +384,9 @@ def check_new_flats(json_file_name, scrapy_rs_name, min_price, max_price, tg_cha
                 'neighbour': neighbour,
                 'street': street,
                 'number': number,
-                'type': type,
                 'title': title,
                 'href': href,
+                'type': type,
                 'site': site,
                 'online': False
             }
@@ -435,7 +435,7 @@ def check_new_flats(json_file_name, scrapy_rs_name, min_price, max_price, tg_cha
             f"SPIDER FINISHED - [NEW: {len(new_urls)}] [TOTAL: {len(data_json)}]: {new_urls}")
 
 
-def scrap_realestate(db_client, db_name, telegram_msg):
+def scrap_realestate(db_client, telegram_msg):
     start_time = time.time()
 
     # Si el nom del projecte te alguna "-" les canviem ja que dona problemes amb el sqlite
@@ -520,7 +520,7 @@ def scrap_realestate(db_client, db_name, telegram_msg):
                                 data['max_price'],
                                 data['telegram_chatuserID'],
                                 db_client,
-                                'scrapyrealestate',
+                                'sr_flats',
                                 telegram_msg,
                                 logger)
 
@@ -564,7 +564,7 @@ def init():
 
         # try:
         # Cridem la funció d'scraping
-        scrap_realestate(db_client, config_db_mongodb['db_name'], telegram_msg)
+        scrap_realestate(db_client, telegram_msg)
         # except:
         #    pass
 
