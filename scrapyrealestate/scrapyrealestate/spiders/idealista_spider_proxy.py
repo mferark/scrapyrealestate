@@ -112,6 +112,8 @@ class IdealistaSpider(CrawlSpider):
             try:
                 if ' / ' in town:
                     town = town.split(' / ')[1]
+                elif '-' in town:
+                    town = town.split('-')[0]
             except:
                 pass
             try:
