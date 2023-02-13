@@ -93,7 +93,9 @@ El puerto 8080 puede varias si usamos más instancias.
   - **start_msg** Envia un mensaje de inicio al grupo de telegram.
   - **min_price** Precio a mostrar minimo.
   - **max_price** Precio a mostrar máximo. Sí no queremos límite usamos 0.
-  - **urls** Introducir las URL de idealista, pisos.com, fotocasa y habitaclia. En el caso de fotocasa necesita tener ordenación de las viviendas más recientes. Recomendado para ciudades pequeñas, barrios medianos y pueblos, ya que solo coge las 2 primeras viviendas de la página. Actualmente no es muy funcional.
+  - **urls** Introducir las URL de idealista, pisos.com, fotocasa y habitaclia. 
+    - Hay la opción para añadir más urls. 
+    - En el caso de fotocasa necesita tener ordenación de las viviendas más recientes. Recomendado para ciudades pequeñas, barrios medianos y pueblos, ya que solo coge las 2 primeras viviendas de la página. Actualmente no es muy funcional.
   - **proxy_idealista** Puede usarse si nos banean la IP por demasiadas peticiónes. Aun así esto es difícil que suceda si usamos el minimo permitido (refresco cada 300 segundos). Deshabilitado por defecto.
   - **send_first** Esta opción se activa cuando se quieren recibir las viviendas que hay antes de iniciar el script. Si está desactivada se recibirán solo las nuevas.
 
