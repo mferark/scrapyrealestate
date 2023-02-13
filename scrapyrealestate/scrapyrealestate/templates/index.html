@@ -54,31 +54,46 @@
     <input type="number" name="max_price" min="0" placeholder="0 = nolimit" required>
   </p>
   <p>
-    <label for="url">IDEALISTA URL</label><br>
+    <!-- <label for="url">IDEALISTA URL</label><br>
     <input type="url" name="url_idealista" id="url_idealista"
-           placeholder="https://www.idealista.com/alquiler-viviendas/barcelona-barcelona/" size="200">
-    <label>proxy_idealista: </label>
-    <select name="proxy_idealista">
-      <option>off</option>
-      <option>on</option>
-    </select>
-  </p>
-  <p>
-    <label for="url">PISOSCOM URL</label><br>
-    <input type="url" name="url_pisoscom" id="url_pisoscom"
-           placeholder="https://www.pisos.com/alquiler/pisos-barcelona/" size="200">
-  </p>
-  <p>
-    <label for="url">FOTOCASA URL</label><br>
-    <input type="url" name="url_fotocasa" id="url_fotocasa"
-           placeholder="https://www.fotocasa.es/ca/lloguer/habitatges/barcelona-capital/totes-les-zones/l?sortType=publicationDate&latitude=41.983&longitude=2.8253&combinedtown_Ids=724,9,17,241,426,17079,0,0,0" size="200">
-  </p>
-  <p>
-    <label for="url">HABITACLIA URL</label><br>
-    <input type="url" name="url_habitaclia" id="url_habitaclia"
-           placeholder="https://www.habitaclia.com/alquiler-barcelona.htm" size="200">
-  </p>
-  <p>
+           placeholder="https://www.idealista.com/alquiler/pisos-barcelona/" size="200"> -->
+           <label for="url">IDEALISTA URL</label><br>
+           <div id="inputContainer_idealista">
+             <input type="url" name="url_idealista" id="url_idealista_0"
+                 placeholder="https://www.idealista.com/alquiler/pisos-barcelona/" size="200">
+           </div>
+           <button type="button" onclick="addInput_idealista()">Agregar URL</button>
+           <label>proxy_idealista: </label>
+           <select name="proxy_idealista">
+             <option>off</option>
+             <option>on</option>
+           </select>
+         </p>
+         <p>
+           <label for="url">PISOSCOM URL</label><br>
+           <div id="inputContainer_pisoscom">
+             <input type="url" name="url_pisoscom" id="url_pisoscom_0"
+                  placeholder="https://www.pisos.com/alquiler/pisos-barcelona/" size="200">
+           </div>
+           <button type="button" onclick="addInput_pisoscom()">Agregar URL</button>
+         </p>
+         <p>
+           <label for="url">FOTOCASA URL</label><br>
+           <div id="inputContainer_fotocasa">
+             <input type="url" name="url_fotocasa" id="url_fotocasa_0"
+                  placeholder="https://www.fotocasa.es/ca/lloguer/habitatges/barcelona-capital/totes-les-zones/l?sortType=publicationDate&latitude=41.983&longitude=2.8253&combinedtown_Ids=724,9,17,241,426,17079,0,0,0" size="200">
+           </div>
+           <button type="button" onclick="addInput_fotocasa()">Agregar URL</button>
+         </p>
+         <p>
+           <label for="url">HABITACLIA URL</label><br>
+           <div id="inputContainer_habitaclia">
+             <input type="url" name="url_habitaclia" id="url_habitaclia_0"
+                  placeholder="https://www.habitaclia.com/alquiler-barcelona.htm" size="200">
+           </div>
+           <button type="button" onclick="addInput_habitaclia()">Agregar URL</button>
+         </p>
+         <p>
     <label>send_first: </label>
     <select name="send_first">
       <option>False</option>
@@ -100,3 +115,61 @@
 </form>
 </body>
 </html>
+<!-- 
+URL Idealista:
+    {% for i in range(5) %}
+        <input type="text" name="url_idealista" value="{{ request.form.url_idealista[i] if request.form.url_idealista and len(request.form.url_idealista) > i else '' }}">
+    {% endfor %} -->
+
+
+
+<script>
+  let inputIndexIdealista = 0;  
+  let inputIndexPisoscom = 0;
+  let inputIndexHabitaclia = 0;
+  let inputIndexFotocasa = 0;
+
+function addInput_idealista() {
+        const inputContainer = document.getElementById("inputContainer_idealista");
+        const newInput = document.createElement("input");
+        newInput.type = "url";
+        newInput.name = "url_idealista";
+        newInput.id = "url_idealista_" + (++inputIndexIdealista);
+        newInput.placeholder = "https://www.idealista.com/alquiler/pisos-barcelona/";
+        newInput.size = 200;
+        inputContainer.appendChild(newInput);
+    }
+
+function addInput_pisoscom() {
+  const inputContainer = document.getElementById("inputContainer_pisoscom");
+  const newInput = document.createElement("input");
+  newInput.type = "url";
+  newInput.name = "url_pisoscom";
+  newInput.id = "url_pisoscom_" + (++inputIndexPisoscom);
+  newInput.placeholder = "https://www.pisos.com/alquiler/pisos-barcelona/";
+  newInput.size = 200;
+  inputContainer.appendChild(newInput);
+}
+
+function addInput_habitaclia() {
+  const inputContainer = document.getElementById("inputContainer_habitaclia");
+  const newInput = document.createElement("input");
+  newInput.type = "url";
+  newInput.name = "url_habitaclia";
+  newInput.id = "url_habitaclia_" + (++inputIndexHabitaclia);
+  newInput.placeholder = "https://www.habitaclia.com/alquiler-barcelona.htm";
+  newInput.size = 200;
+  inputContainer.appendChild(newInput);
+}
+
+function addInput_fotocasa() {
+  const inputContainer = document.getElementById("inputContainer_fotocasa");
+  const newInput = document.createElement("input");
+  newInput.type = "url";
+  newInput.name = "url_fotocasa";
+  newInput.id = "url_fotocasa_" + (++inputIndexFotocasa);
+  newInput.placeholder = "https://www.fotocasa.es/ca/lloguer/habitatges/barcelona-capital/totes-les-zones/l?sortType=publicationDate&latitude=41.983&longitude=2.8253&combinedtown_Ids=724,9,17,241,426,17079,0,0,0";
+  newInput.size = 200;
+  inputContainer.appendChild(newInput);
+}
+</script>

@@ -158,11 +158,19 @@ class PisoscomSpider(CrawlSpider):
             price = flats[nflat].find("span", {"class": "ad-preview__price"}).text.strip()
             # span --> class="item-detail" --> [nflat] --> span .text
             rooms = flats[nflat].find_all("p", {"class": "ad-preview__char p-sm"})[0].text.strip()
-            # Hi ha pisos sense m2, data o planta. Per evitar problemes assignem variable buida si hi ha error.
+            # # Hi ha pisos sense m2, data o planta. Per evitar problemes assignem variable buida si hi ha error.
+            # try:
+            #     m2 = flats[nflat].find_all("p", {"class": "ad-preview__char p-sm"})[2].text.strip()
+            # except IndexError:
+            #     m2 = flats[nflat].find_all("p", {"class": "ad-preview__char p-sm"})[1].text.strip()
+            # except:
+            #     m2 = ""
             try:
-                m2 = flats[nflat].find_all("p", {"class": "ad-preview__char p-sm"})[2].text.strip()
-            except IndexError:
-                m2 = flats[nflat].find_all("p", {"class": "ad-preview__char p-sm"})[1].text.strip()
+                m2_elements = flats[nflat].find_all("p", {"class": "ad-preview__char p-sm"})
+                if len(m2_elements) >= 3:
+                    m2 = m2_elements[2].text.strip()
+                else:
+                    m2 = ""
             except:
                 m2 = ""
             try:
