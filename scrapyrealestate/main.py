@@ -507,6 +507,7 @@ def scrap_realestate(db_client, telegram_msg):
     logger.debug(f"EDITING ./data/{scrapy_rs_name}.json...")
     with open(f'./data/{scrapy_rs_name}.json', 'r') as file:
         filedata = file.read()
+
     # Replace the target string
     filedata = filedata.replace('\n][', ',')
     # Write the file out again
