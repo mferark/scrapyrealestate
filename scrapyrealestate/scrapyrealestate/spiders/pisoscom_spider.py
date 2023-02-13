@@ -141,6 +141,13 @@ class PisoscomSpider(CrawlSpider):
                         town = town.split('.')[-1].split(' ')[1]
                     elif 'Capital' in town:
                         town = town.replace('Capital', '').replace(' ', '')
+            try:
+                if ' - ' in town:
+                    town = town.split(' - ')[0]
+                elif '-' in town_:
+                    town = town.split('-')[0]
+            except:
+                pass
 
             #print(f"MUNICIPI: {town}, STREET: {street}, BARRI: {neighbour}, NUMBER: {number}")
 
