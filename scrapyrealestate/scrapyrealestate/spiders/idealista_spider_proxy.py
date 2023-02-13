@@ -110,6 +110,11 @@ class IdealistaSpider(CrawlSpider):
             except:
                 pass
             try:
+                if ' / ' in town:
+                    town = town.split(' / ')[1]
+            except:
+                pass
+            try:
                 if neighbour[0] == ' ':
                     neighbour = neighbour[1:]
             except:
