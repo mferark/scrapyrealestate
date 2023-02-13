@@ -73,6 +73,7 @@ def insert_flat_mongodb(db_client, db_name, db_col, data_flat, logger):
                           "title": data_flat['title'],
                           "href": data_flat['href'],
                           "site": data_flat['site'],
+                          "type": data_flat['type'],
                           "online": data_flat['online'],
                           "datetime": datetime.datetime.now()
                           })
