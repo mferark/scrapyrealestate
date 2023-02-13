@@ -63,18 +63,18 @@ def del_json_flats(dir):
 
 
 def get_config():
-    # Sino existeix el fitxer de configuració agafem les dades de la web
+    #os.chdir('../scrapyrealestate/scrapyrealestate')
+    #Sino existeix el fitxer de configuració agafem les dades de la web
     if not os.path.isfile('./data/config.json'):
-        # Mirem si existeix el directori data i logs, sinó el creem.
-        if not os.path.exists('data'):
-            os.makedirs('data')
-        pid = init_app_flask()  # iniciem  flask a localhost:8080
-        get_config_flask(pid)  # agafem les dades de la configuració
+        #Mirem si existeix el directori data i logs, sinó el creem.
+       if not os.path.exists('data'):
+           os.makedirs('data')
+       pid = init_app_flask()  # iniciem  flask a localhost:8080
+       get_config_flask(pid)  # agafem les dades de la configuració
     else:
         with open('./data/config.json') as json_file:
             global data
             data = json.load(json_file)
-
 
 def check_config(db_client, db_name):
     # creem l'objecte per enviar tg
@@ -86,7 +86,7 @@ def check_config(db_client, db_name):
         sys.exit()
 
     # Check urls
-    urls = get_urls()
+    urls = get_urls(data)
     urls_ok = ''
     urls_text = ''
     db_urls = ''
@@ -97,16 +97,18 @@ def check_config(db_client, db_name):
         for url in urls[portal]:
             # Mirem si hi ha mes d'una url per portal
             # Si tenim mes de x urls, sortim
-            if len(urls[portal]) > 1:
-                logger.error(f"MAXIM URLS PORTAL (1) YOU HAVE ({len(urls[portal])}) IN {url.split('/')[2]}")
-                info_message = tb.send_message(data['telegram_chatuserID'], f"<code>LOADING...</code>\n"
-                                                                            f"\n"
-                                                                            f"<code>scrapyrealestate v{__version__}\n</code>"
-                                                                            f"\n"
-                                                                            f"<code>MAXIM URLS PORTAL (1) YOU HAVE ({len(urls[portal])}) IN {url.split('/')[2]}</code>\n",
-                                               parse_mode='HTML')
-                sys.exit()
+            # if len(urls[portal]) > 1:
+            #     logger.error(f"MAXIM URLS PORTAL (1) YOU HAVE ({len(urls[portal])}) IN {url.split('/')[2]}")
+            #     info_message = tb.send_message(data['telegram_chatuserID'], f"<code>LOADING...</code>\n"
+            #                                                                 f"\n"
+            #                                                                 f"<code>scrapyrealestate v{__version__}\n</code>"
+            #                                                                 f"\n"
+            #                                                                 f"<code>MAXIM URLS PORTAL (1) YOU HAVE ({len(urls[portal])}) IN {url.split('/')[2]}</code>\n",
+            #                                    parse_mode='HTML')
+            #     sys.exit()
             # Si te mes de 3 parts es que es url llarga i la guardem a la llista de ok
+            # url = url[0] if isinstance(url, list) else url
+            # print(url)
             if len(url.split('/')) > 2:
                 portal_url = url.split('/')[2]
                 portal_name = portal_url.split('.')[1]
@@ -119,15 +121,15 @@ def check_config(db_client, db_name):
                     urls_text += f"\t\t- {portal_name} → {url.split('/')[3]}\n"
 
     # Si tenim mes de x urls, sortim
-    if urls_ok_count > 4:
-        logger.error(f"MAXIM URLS (4) YOU HAVE ({urls_ok_count})")
-        info_message = tb.send_message(data['telegram_chatuserID'], f"<code>LOADING...</code>\n"
-                                                                    f"\n"
-                                                                    f"<code>scrapyrealestate v{__version__}\n</code>"
-                                                                    f"\n"
-                                                                    f"<code>MAXIM URLS (4) YOU HAVE ({urls_ok_count})</code>\n",
-                                       parse_mode='HTML')
-        sys.exit()
+    # if urls_ok_count > 4:
+    #     logger.error(f"MAXIM URLS (4) YOU HAVE ({urls_ok_count})")
+    #     info_message = tb.send_message(data['telegram_chatuserID'], f"<code>LOADING...</code>\n"
+    #                                                                 f"\n"
+    #                                                                 f"<code>scrapyrealestate v{__version__}\n</code>"
+    #                                                                 f"\n"
+    #                                                                 f"<code>MAXIM URLS (4) YOU HAVE ({urls_ok_count})</code>\n",
+    #                                    parse_mode='HTML')
+    #     sys.exit()
 
     if not data['telegram_chatuserID'] is None:
         try:
@@ -239,37 +241,25 @@ def get_config_flask(pid):
         time.sleep(1)
 
 
-def get_urls():
+def get_urls(data):
     urls = {}
 
     # sino hi ha urls, sortim
-    if data['url_idealista'] == '' and data['url_pisoscom'] == '' and data['url_fotocasa'] == '' and data[
-        'url_habitaclia'] == '':
+    if data.get('url_idealista', '') == '' and data.get('url_pisoscom', '') == '' and data.get('url_fotocasa', '') == '' and data.get(
+        'url_habitaclia', '') == '':
         logger.warning("NO URLS ENTERED (MINIUM 1 URL)")
         sys.exit()
 
-    try:
-        start_urls_idealista = [data['url_idealista']]
-        start_urls_idealista = [url + '?ordenado-por=fecha-publicacion-desc' for url in start_urls_idealista]
-    except:
-        start_urls_idealista = ['https://www.idealista.com/']
+    start_urls_idealista = data.get('url_idealista', [])
+    start_urls_idealista = [url + '?ordenado-por=fecha-publicacion-desc' for url in start_urls_idealista]
 
-    try:
-        start_urls_pisoscom = [data['url_pisoscom']]
-        start_urls_pisoscom = [url + 'fecharecientedesde-desc/' for url in start_urls_pisoscom]
-    except:
-        start_urls_pisoscom = ['https://www.pisos.com/']
+    start_urls_pisoscom = data.get('url_pisoscom', [])
+    start_urls_pisoscom = [url + 'fecharecientedesde-desc/' for url in start_urls_pisoscom]
 
-    try:
-        start_urls_fotocasa = [data['url_fotocasa']]
-    except:
-        start_urls_fotocasa = ['https://www.fotocasa.es/']
+    start_urls_fotocasa = data.get('url_fotocasa', [])
 
-    try:
-        start_urls_habitaclia = [data['url_habitaclia']]
-        start_urls_habitaclia = [url + '?ordenar=mas_recientes' for url in start_urls_habitaclia]
-    except:
-        start_urls_habitaclia = ['https://www.habitaclia.com/']
+    start_urls_habitaclia = data.get('url_habitaclia', [])
+    start_urls_habitaclia = [url + '?ordenar=mas_recientes' for url in start_urls_habitaclia]
 
     urls['start_urls_idealista'] = start_urls_idealista
     urls['start_urls_pisoscom'] = start_urls_pisoscom
@@ -454,10 +444,15 @@ def scrap_realestate(db_client, db_name, telegram_msg):
     proxy_idealista = data['proxy_idealista']
 
     urls = []
-    urls.append(data['url_idealista'])
-    urls.append(data['url_pisoscom'])
-    urls.append(data['url_fotocasa'])
-    urls.append(data['url_habitaclia'])
+    # urls.append(data['url_idealista'])
+    # urls.append(data['url_pisoscom'])
+    # urls.append(data['url_fotocasa'])
+    # urls.append(data['url_habitaclia'])
+    for key in data:
+        if "url" in key and isinstance(data[key], list):
+            urls += data[key]
+        elif "url" in key:
+            urls.append(data[key])
 
     # iterem les urls que hi ha i fem scrape
     for url in urls:
@@ -465,6 +460,7 @@ def scrap_realestate(db_client, db_name, telegram_msg):
         # try:
         if url == '':
             continue
+
         portal_url = url.split('/')[2]
         portal_name = portal_url.split('.')[1]
         try:
