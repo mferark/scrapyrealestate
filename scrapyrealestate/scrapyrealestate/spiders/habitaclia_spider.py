@@ -99,11 +99,9 @@ class HabitacliaSpider(CrawlSpider):
             street = ''
             street_ = ''
             number = ''
-            if len(title.split('.')) == 2:
+            if len(title.split('.')) > 1:
                 if 'Alquiler Piso  en  ' in title:
                     street_ = title.split('.')[0].replace('Alquiler Piso  en  ', '')
-                elif 'Alquiler Casa  en  ' in title:
-                    street_ = title.split('.')[0].replace('Alquiler Casa  en  ', '')
                 elif 'Alquiler Apartamento  en  ' in title:
                     street_ = title.split('.')[0].replace('Alquiler Apartamento  en  ', '')
                 elif 'Alquiler Piso  ' in title:
@@ -126,7 +124,6 @@ class HabitacliaSpider(CrawlSpider):
                     street_ = title.split('.')[0].replace('Piso  C/ ', '')
                 elif 'Piso  ' in title:
                     street_ = title.split('.')[0].replace('Piso  ', '')
-
             # busquem posibles noms de carrers
             if len(street_) > 0:
                 if 'calle' in street_.lower():
@@ -185,7 +182,7 @@ class HabitacliaSpider(CrawlSpider):
             except:
                 pass
 
-            #print(f"MUNICIPI: {town}, STREET: {street.replace('en  ', '')}, BARRI: {neighbour}, NUMBER: {number}")
+            #print(f"MUNICIPI: {town}, STREET: {street}, BARRI: {neighbour}, NUMBER: {number}")
 
             #except:
             #    town = ''

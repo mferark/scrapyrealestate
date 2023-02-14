@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-import sys, subprocess, telebot, time, os.path, platform, os, logging, uuid, urllib.request, json
+import sys, subprocess, telebot, time, os.path, platform, os, logging, uuid, urllib.request, json, random
 import scrapyrealestate.db_module as db_module
 from os import path
 from art import *
@@ -61,6 +61,15 @@ def del_json_flats(dir):
         if f != 'config.json':
             os.remove(os.path.join(dir, f))
 
+def mix_list(original_list):
+    list = original_list[:]
+    longitud_list = len(list)
+    for i in range(longitud_list):
+        index_random = random.randint(0, longitud_list - 1)
+        temporal = list[i]
+        list[i] = list[index_random]
+        list[index_random] = temporal
+    return list
 
 def get_config():
     #os.chdir('../scrapyrealestate/scrapyrealestate')
@@ -454,8 +463,11 @@ def scrap_realestate(db_client, telegram_msg):
         elif "url" in key:
             urls.append(data[key])
 
+    # Mesclem les urls per no repetir la mateixa spider
+    urls_mixed = mix_list(urls)
+
     # iterem les urls que hi ha i fem scrape
-    for url in urls:
+    for url in urls_mixed:
         # Mirem quin portal es ['idealista', 'pisoscom', 'fotocasa', 'habitaclia', 'yaencontre', 'enalquiler' ]
         # try:
         if url == '':
