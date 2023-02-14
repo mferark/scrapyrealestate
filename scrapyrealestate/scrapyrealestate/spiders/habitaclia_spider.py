@@ -100,7 +100,33 @@ class HabitacliaSpider(CrawlSpider):
             street_ = ''
             number = ''
             if len(title.split('.')) == 2:
-                street_ = title.split('.')[0].replace('Alquiler Piso  ', '').replace('Alquiler Tríplex ', '').replace('Alquiler Ático  ', '')
+                if 'Alquiler Piso  en  ' in title:
+                    street_ = title.split('.')[0].replace('Alquiler Piso  en  ', '')
+                elif 'Alquiler Casa  en  ' in title:
+                    street_ = title.split('.')[0].replace('Alquiler Casa  en  ', '')
+                elif 'Alquiler Apartamento  en  ' in title:
+                    street_ = title.split('.')[0].replace('Alquiler Apartamento  en  ', '')
+                elif 'Alquiler Piso  ' in title:
+                    street_ = title.split('.')[0].replace('Alquiler Piso  ', '')
+                elif 'Alquiler Apartamento  ' in title:
+                    street_ = title.split('.')[0].replace('Alquiler Apartamento  ', '')
+                elif 'Alquiler Ático  ' in title:
+                    street_ = title.split('.')[0].replace('Alquiler Ático  ', '')
+                elif 'Alquiler Ático  ' in title:
+                    street_ = title.split('.')[0].replace('Alquiler Ático  ', '')
+                elif 'Alquiler Estudio  ' in title:
+                    street_ = title.split('.')[0].replace('Alquiler Estudio  ', '')
+                elif 'Dúplex  en  ' in title:
+                    street_ = title.split('.')[0].replace('Dúplex  en  ', '')
+                elif 'Chalet  en  ' in title:
+                    street_ = title.split('.')[0].replace('Chalet  en  ', '')
+                elif 'Casa adosada  ' in title:
+                    street_ = title.split('.')[0].replace('Casa adosada  ', '')
+                elif 'Piso  C/ ' in title:
+                    street_ = title.split('.')[0].replace('Piso  C/ ', '')
+                elif 'Piso  ' in title:
+                    street_ = title.split('.')[0].replace('Piso  ', '')
+
             # busquem posibles noms de carrers
             if len(street_) > 0:
                 if 'calle' in street_.lower():
@@ -124,6 +150,8 @@ class HabitacliaSpider(CrawlSpider):
                 elif 'gran via' in street_.lower():
                     street = street_
                 elif 'travessera' in street_.lower():
+                    street = street_
+                elif 'Travesía' in street_.lower():
                     street = street_
                 elif 'camino' in street_.lower():
                     street = street_
