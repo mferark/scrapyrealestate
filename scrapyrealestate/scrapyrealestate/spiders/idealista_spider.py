@@ -138,7 +138,7 @@ class IdealistaSpider(CrawlSpider):
                 elif 'av.' in street.lower():
                     street = street
                 elif 'plaza' in street.lower():
-                    street = street.replace('plaza', 'plaça')
+                    street = street
                 elif 'via' in street.lower():
                     street = street
                 elif 'gran via' in street.lower():
