@@ -141,6 +141,10 @@ class PisoscomSpider(CrawlSpider):
                         town = town.split('.')[-1].split(' ')[1]
                     elif 'Capital' in town:
                         town = town.replace('Capital', '').replace(' ', '')
+                elif 'Capital' in town:
+                    town = town.replace('Capital', '').replace(' ', '')
+            else:
+                town = town_
             try:
                 if ' - ' in town:
                     town = town.split(' - ')[0]
