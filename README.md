@@ -19,13 +19,13 @@ Este programa en Python escrapea varios portales inmobiliarios y posteriormente 
       ```
       docker pull mferark/scrapyrealestate:latest
       docker pull mferark/scrapyrealestate:arm-latest
-      docker run -d -p 8080:8080 --name scrapyrealestate --restart=always mferark/scrapyrealestate:latest
-      docker run -d -p 8080:8080 --name scrapyrealestate-arm --restart=always mferark/scrapyrealestate:arm-latest
+      docker run -d -p 8080:8080 --name scrapyrealestate --restart=always mferark/scrapyrealestate:amd64-latest
+      docker run -d -p 8080:8080 --name scrapyrealestate-arm --restart=always mferark/scrapyrealestate:arm64-latest
       ```
       - También podemos ejecutar otra instancia usando otro puerto
       ```
-      docker run -d -p 8081:8080 --name scrapyrealestate mferark/scrapyrealestate:latest
-      docker run -d -p 8081:8080 --name scrapyrealestate-arm mferark/scrapyrealestate:arm-latest
+      docker run -d -p 8081:8080 --name scrapyrealestate mferark/scrapyrealestate:amd64-latest
+      docker run -d -p 8081:8080 --name scrapyrealestate-arm mferark/scrapyrealestate:arm64-latest
       ```
     - O bien, usando docker-compose (a veces hay que instalarlo por separado de docker).
       - Descargamos el archivo docker-compose.yaml en un directorio nuevo.
